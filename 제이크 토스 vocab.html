@@ -412,12 +412,18 @@ function renderCard(){
   const bmk=document.getElementById('vbmk');
   bmk.textContent=isMk?'★':'☆';
   bmk.className='bmk'+(isMk?' on':'');
-  document.getElementById('vprev').disabled=vIdx===0;
-  document.getElementById('vnext').disabled=vIdx===total-1;
+  document.getElementById('vprev').disabled=false;
+  document.getElementById('vnext').disabled=false;
   try{localStorage.setItem('vi_'+vSess.id,vIdx);}catch(e){}
 }
-function vPrev(){if(vIdx>0){vIdx--;renderCard();}}
-function vNext(){if(vIdx<vSess.words.length-1){vIdx++;renderCard();}}
+function vPrev(){
+  vIdx = vIdx > 0 ? vIdx - 1 : vSess.words.length - 1;
+  renderCard();
+}
+function vNext(){
+  vIdx = vIdx < vSess.words.length - 1 ? vIdx + 1 : 0;
+  renderCard();
+}
 function vMark(){
   const key='v_'+vSess.words[vIdx].id;
   marked[key]=!marked[key]; if(!marked[key])delete marked[key];
