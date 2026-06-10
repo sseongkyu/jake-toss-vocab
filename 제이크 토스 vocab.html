@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#4F6AF5">
+<title>제이크 토스 Vocab</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="토스 Vocab">
+<meta name="application-name" content="토스 Vocab">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2ff;color:#1a1a2e}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .28s;overflow:hidden}
+.screen.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
+
+/* HEADER */
+.hdr{background:#4F6AF5;color:#fff;padding:10px 12px;display:flex;align-items:center;gap:8px;min-height:52px;flex-shrink:0;box-shadow:0 2px 8px rgba(79,106,245,.3)}
+.hdr h1{font-size:.98rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hdr .sub{font-size:.68rem;opacity:.85;flex-shrink:0;white-space:nowrap}
+.ibtn{background:rgba(255,255,255,.2);border:none;color:#fff;height:34px;border-radius:20px;padding:0 11px;font-size:.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;flex-shrink:0;font-weight:600;white-space:nowrap}
+.ibtn:active{background:rgba(255,255,255,.38)}
+.ibtn.active{background:rgba(255,255,255,.92);color:#4F6AF5}
+
+/* HOME */
+.hero{background:linear-gradient(145deg,#4F6AF5,#7B5EF8);padding:26px 20px 18px;color:#fff;text-align:center;flex-shrink:0}
+.hero h2{font-size:1.4rem;font-weight:800;margin-bottom:4px}
+.hero p{font-size:.83rem;opacity:.82}
+.sgrid{padding:11px;display:grid;grid-template-columns:1fr 1fr;gap:9px;overflow-y:auto;flex:1}
+.scard{background:#fff;border-radius:16px;padding:15px 12px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.07);display:flex;flex-direction:column;gap:4px;position:relative;overflow:hidden;transition:transform .12s}
+.scard:active{transform:scale(.96)}
+.scard .ico{font-size:1.7rem}
+.scard .nm{font-size:.83rem;font-weight:700;color:#1a1a2e;line-height:1.3}
+.scard .snm{font-size:.66rem;color:#aaa}
+.scard .mt{font-size:.69rem;color:#bbb;margin-top:1px}
+.scard .bdg{position:absolute;top:9px;right:9px;background:#FF6B6B;color:#fff;border-radius:20px;padding:2px 7px;font-size:.64rem;font-weight:700}
+.instbanner{grid-column:1/-1;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:13px;padding:12px 15px;color:#fff;display:flex;align-items:center;gap:10px;cursor:pointer}
+.instbanner:active{opacity:.88}
+.instbanner .itxt b{display:block;font-size:.88rem;font-weight:700}
+.instbanner .itxt span{font-size:.71rem;opacity:.85}
+.revrow{margin:0 11px 11px;background:#fff;border:2px solid #4F6AF5;border-radius:13px;padding:12px 18px;cursor:pointer;color:#4F6AF5;font-weight:700;font-size:.9rem;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0}
+.revrow:active{background:#eef0ff}
+.cbadge{background:rgba(79,106,245,.12);border-radius:20px;padding:2px 9px;font-size:.75rem}
+
+/* PROGRESS */
+.pbar{height:3px;background:#dde0ff;flex-shrink:0}
+.pfill{height:100%;background:#4F6AF5;transition:width .35s ease}
+
+/* VOCAB CARD */
+.carea{flex:1;display:flex;align-items:center;justify-content:center;padding:11px;overflow:hidden}
+.vcard{
+  background:#fff;border-radius:22px;padding:20px 18px;width:100%;max-width:440px;
+  box-shadow:0 4px 24px rgba(79,106,245,.12);display:flex;flex-direction:column;gap:10px;
+  position:relative;min-height:275px;
+  /* 텍스트 선택 허용 (단어 발음 선택용), 컨텍스트 메뉴만 차단 */
+  -webkit-user-select:text;user-select:text;
+  -webkit-touch-callout:none;
+}
+.vcard .star-i{position:absolute;top:12px;right:13px;font-size:1.2rem;opacity:.2;transition:all .2s;pointer-events:none;user-select:none;-webkit-user-select:none}
+.vcard .star-i.on{opacity:1;transform:scale(1.1)}
+
+.expr{font-size:1.6rem;font-weight:800;color:#1a1a2e;word-break:break-word;line-height:1.25;text-align:center;cursor:text}
+.expr.sm{font-size:1.05rem}
+.ipa-txt{font-size:.82rem;color:#888;text-align:center;font-family:monospace;margin-top:-4px;letter-spacing:.3px}
+.kor{font-size:.95rem;color:#4F6AF5;font-weight:600;text-align:center}
+.div{height:1px;background:#f0f2ff}
+.lbl{font-size:.59rem;font-weight:700;color:#ccc;text-transform:uppercase;letter-spacing:.5px;user-select:none;-webkit-user-select:none}
+.eko{font-size:.86rem;color:#888;line-height:1.55;word-break:break-word;cursor:text}
+.een{font-size:.92rem;color:#333;line-height:1.55;word-break:break-word;font-weight:500;cursor:text}
+
+/* HIDDEN STATE */
+.h-expr .expr{filter:blur(9px);pointer-events:none}
+.h-expr .ipa-txt{filter:blur(9px);pointer-events:none}
+.h-een .een{filter:blur(9px);pointer-events:none}
+.reveal-wrap{position:relative}
+.reveal-btn{display:none;position:absolute;inset:0;background:rgba(79,106,245,.08);border:none;border-radius:8px;cursor:pointer;color:#4F6AF5;font-size:.78rem;font-weight:700;width:100%;align-items:center;justify-content:center}
+.h-expr .reveal-expr{display:flex}
+.h-een .reveal-een{display:flex}
+
+/* CONTROLS */
+.ctrl-nav{padding:6px 14px 2px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0}
+.ctrl-tts{padding:4px 14px 14px;display:flex;align-items:center;justify-content:center;gap:10px;flex-shrink:0}
+.bn{background:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:1.2rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;color:#4F6AF5;transition:transform .1s;flex-shrink:0;user-select:none;-webkit-user-select:none}
+.bn:active{transform:scale(.91)}
+.bn:disabled{opacity:.25;pointer-events:none}
+.bmk{background:#fff;border:2px solid #FFAB3D;border-radius:50%;width:48px;height:48px;font-size:1.1rem;cursor:pointer;color:#FFAB3D;box-shadow:0 2px 8px rgba(0,0,0,.07);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;user-select:none;-webkit-user-select:none}
+.bmk.on{background:#FFAB3D;color:#fff}
+.bmk:active{transform:scale(.91)}
+.bsp-w{background:#4F6AF5;border:none;border-radius:24px;height:50px;padding:0 18px;font-size:.83rem;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(79,106,245,.4);color:#fff;display:flex;align-items:center;gap:5px;transition:transform .1s;user-select:none;-webkit-user-select:none}
+.bsp-s{background:#7B5EF8;border:none;border-radius:24px;height:50px;padding:0 18px;font-size:.83rem;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(123,94,248,.4);color:#fff;display:flex;align-items:center;gap:5px;transition:transform .1s;user-select:none;-webkit-user-select:none}
+.bsp-w:active,.bsp-s:active{transform:scale(.93)}
+.bsp-w.on,.bsp-s.on{animation:glow 1s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* OVERLAY */
+.ovl{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
+.ovl.open{opacity:1;pointer-events:all}
+
+/* BOTTOM SHEET */
+.sheet{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;padding:14px 17px 26px;z-index:201;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:88vh;overflow-y:auto}
+.sheet.open{transform:translateY(0)}
+.sh{width:40px;height:4px;background:#e0e3ff;border-radius:4px;margin:0 auto 13px}
+.sheet h3{font-size:.97rem;font-weight:700;margin-bottom:12px;text-align:center}
+.steps{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+.step{display:flex;align-items:flex-start;gap:10px;background:#f7f8ff;border-radius:11px;padding:10px 12px}
+.step .num{background:#4F6AF5;color:#fff;border-radius:50%;width:23px;height:23px;display:flex;align-items:center;justify-content:center;font-size:.73rem;font-weight:700;flex-shrink:0;margin-top:1px}
+.step .txt{font-size:.84rem;line-height:1.5;color:#333}
+.step .txt b{color:#1a1a2e;font-weight:700}
+.os-tabs{display:flex;gap:8px;margin-bottom:11px}
+.os-tab{flex:1;padding:9px;border:2px solid #e0e3ff;border-radius:10px;background:#fff;font-size:.82rem;font-weight:600;cursor:pointer;color:#888;text-align:center}
+.os-tab.on{border-color:#4F6AF5;color:#4F6AF5;background:#f0f2ff}
+.tip{background:#fff9e6;border:1px solid #FFD700;border-radius:10px;padding:9px 12px;font-size:.79rem;color:#7a6000;line-height:1.5}
+.tip b{color:#5a4500}
+
+/* REVIEW */
+.rlist{flex:1;overflow-y:auto;padding:10px 11px;display:flex;flex-direction:column;gap:8px}
+.empty{text-align:center;padding:50px 20px;color:#bbb;user-select:none}
+.empty .ei{font-size:2.8rem;margin-bottom:10px}
+.ri{background:#fff;border-radius:14px;padding:12px;box-shadow:0 2px 7px rgba(0,0,0,.05);cursor:pointer;display:flex;gap:9px;align-items:flex-start}
+.ri:active{background:#f7f8ff}
+.ri .ric{font-size:1.2rem;flex-shrink:0;margin-top:2px;user-select:none}
+.ri .rib{flex:1;min-width:0}
+.ri .rs{font-size:.64rem;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
+.ri .re{font-size:.96rem;font-weight:700;color:#1a1a2e;word-break:break-word}
+.ri .rk{font-size:.82rem;color:#4F6AF5;margin-top:2px}
+.ri .rx{font-size:.79rem;color:#666;margin-top:3px;line-height:1.5;word-break:break-word}
+.ri-btns{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.rsp{background:#f0f2ff;border:none;border-radius:50%;width:33px;height:33px;display:flex;align-items:center;justify-content:center;font-size:.78rem;cursor:pointer;user-select:none}
+.rsp.s{background:#ede8ff}
+.rsp:active{opacity:.7}
+.rctrl{padding:8px 11px 15px;display:flex;gap:8px;flex-shrink:0}
+.rctrl button{flex:1;padding:13px;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;user-select:none}
+.bclr{background:#fff;color:#FF6B6B;border:2px solid #FF6B6B}
+.bprac{background:#4F6AF5;color:#fff}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;gap:0">
+    <div style="font-size:3rem;margin-bottom:12px">📖</div>
+    <div style="font-size:1.4rem;font-weight:800;color:#1a1a2e;margin-bottom:4px">토스 단어장</div>
+    <div style="font-size:.82rem;color:#aaa;margin-bottom:32px;text-align:center">제이크 토익스피킹 필수 표현<br>개인 학습용 · 무단 배포 금지</div>
+    <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px">
+      <input id="pw-input" type="password" placeholder="비밀번호 입력"
+        style="width:100%;padding:16px 18px;border:2px solid #e0e3ff;border-radius:14px;font-size:1.1rem;outline:none;text-align:center;letter-spacing:4px;font-family:inherit"
+        onkeydown="if(event.key==='Enter')tryLogin()"
+        oninput="document.getElementById('pw-err').style.display='none'"
+      >
+      <div id="pw-err" style="display:none;color:#FF6B6B;font-size:.82rem;text-align:center">비밀번호가 올바르지 않습니다.</div>
+      <button onclick="tryLogin()"
+        style="width:100%;padding:16px;background:#4F6AF5;color:#fff;border:none;border-radius:14px;font-size:1rem;font-weight:700;cursor:pointer">
+        입장하기
+      </button>
+    </div>
+  </div>
+  <div style="padding:16px;text-align:center;font-size:.72rem;color:#ccc;line-height:1.6;flex-shrink:0">
+    © 제이크 토익스피킹 · 본 자료는 저작권법의 보호를 받습니다<br>수강생 개인 학습 목적 외 사용 및 배포 금지
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="screen-home" class="screen hidden">
+  <div class="hero">
+    <h2>📖 토스 단어장</h2>
+    <p>제이크 토익스피킹 필수 표현 · 471개</p>
+  </div>
+  <div class="sgrid" id="sgrid"></div>
+  <div class="revrow" onclick="openReview()">⭐ 오답노트 <span class="cbadge" id="rcnt">0개</span></div>
+  <div style="padding:10px;text-align:center;font-size:.68rem;color:#ccc;flex-shrink:0">© 제이크 토익스피킹 · 수강생 개인 학습용</div>
+</div>
+
+<!-- VOCAB -->
+<div id="screen-vocab" class="screen hidden">
+  <div class="hdr">
+    <button class="ibtn" onclick="goHome()" style="user-select:none">←</button>
+    <h1 id="vtitle"></h1>
+    <button class="ibtn" id="vhide-btn" onclick="toggleHide()" style="user-select:none">👁 숨기기</button>
+    <span class="sub" id="vprog"></span>
+  </div>
+  <div class="pbar"><div class="pfill" id="vbar"></div></div>
+  <div class="carea">
+    <div class="vcard" id="vcard">
+      <div class="star-i" id="vstar">⭐</div>
+
+      <!-- 영어 표현 -->
+      <div class="reveal-wrap">
+        <div class="expr" id="vexpr"></div>
+        <div class="ipa-txt" id="vipa"></div>
+        <button class="reveal-btn reveal-expr" onclick="revealExpr()" style="user-select:none">탭하여 표현 확인 👁</button>
+      </div>
+
+      <div class="kor" id="vkor" style="user-select:none"></div>
+      <div class="div"></div>
+
+      <div class="lbl">🇰🇷 한국어 예문</div>
+      <div class="eko" id="veko"></div>
+
+      <div class="lbl" style="margin-top:4px">🇺🇸 영어 예문</div>
+      <div class="reveal-wrap">
+        <div class="een" id="veen"></div>
+        <button class="reveal-btn reveal-een" onclick="revealEen()" style="user-select:none">탭하여 영어 예문 확인 👁</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 네비 + 즐겨찾기 -->
+  <div class="ctrl-nav">
+    <button class="bn" id="vprev" onclick="vPrev()" style="user-select:none">◀</button>
+    <button class="bmk" id="vbmk" onclick="vMark()" style="user-select:none">☆</button>
+    <button class="bn" id="vnext" onclick="vNext()" style="user-select:none">▶</button>
+  </div>
+  <!-- TTS 버튼 -->
+  <div class="ctrl-tts">
+    <button class="bsp-w" id="vsp-w" onclick="speakWord()">🔊 단어</button>
+    <button class="bsp-s" id="vsp-s" onclick="speakSent()">🔊 문장</button>
+  </div>
+</div>
+
+<!-- REVIEW -->
+<div id="screen-review" class="screen hidden">
+  <div class="hdr">
+    <button class="ibtn" onclick="goHome()" style="user-select:none">←</button>
+    <h1>⭐ 오답노트</h1>
+    <span class="sub" id="rcnt2"></span>
+  </div>
+  <div class="rlist" id="rlist"></div>
+  <div class="rctrl" id="rctrl" style="display:none">
+    <button class="bclr" onclick="clearMarks()">전체 삭제</button>
+    <button class="bprac" onclick="practiceMarked()">복습 시작</button>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="ovl" id="ovl" onclick="closeSheet()"></div>
+
+<!-- INSTALL SHEET -->
+<div class="sheet" id="sheet-install">
+  <div class="sh"></div>
+  <h3>📱 핸드폰에서 사용하기</h3>
+  <div class="tip" style="margin-bottom:12px">✅ <b>설치 불필요!</b> 이 파일(index.html) 하나만 폰으로 전송하면 끝. 인터넷도 불필요!</div>
+  <div class="os-tabs">
+    <button class="os-tab on" id="tab-ao" onclick="switchOS('ao')">🤖 Android</button>
+    <button class="os-tab" id="tab-ios" onclick="switchOS('ios')">🍎 iPhone</button>
+  </div>
+  <div id="guide-ao" class="steps">
+    <div class="step"><div class="num">1</div><div class="txt"><b>카카오톡 → 나에게 보내기</b>로 index.html 파일 전송<br><span style="color:#aaa;font-size:.76rem">또는 구글 드라이브, USB, 이메일 첨부</span></div></div>
+    <div class="step"><div class="num">2</div><div class="txt">폰에서 파일 받은 후 <b>Chrome으로 열기</b></div></div>
+    <div class="step"><div class="num">3</div><div class="txt">(선택) Chrome 메뉴(⋮) → <b>홈 화면에 추가</b> → 앱처럼!</div></div>
+  </div>
+  <div id="guide-ios" class="steps" style="display:none">
+    <div class="step"><div class="num">1</div><div class="txt"><b>AirDrop</b> 또는 <b>카카오톡 나에게 보내기</b>로 전송</div></div>
+    <div class="step"><div class="num">2</div><div class="txt">iPhone <b>파일 앱</b>에서 파일 탭 → Safari로 자동으로 열림</div></div>
+    <div class="step"><div class="num">3</div><div class="txt">(선택) Safari 공유(⬆) → <b>홈 화면에 추가</b></div></div>
+  </div>
+  <div class="tip" style="margin-top:10px">💡 단어 텍스트를 <b>꾹 눌러 선택</b>하면 선택한 단어만 발음!</div>
+</div>
+
+<script>
+const DATA = {"sessions":[{"id":"voca","title":"필수 VOCA","subtitle":"IPA 발음기호 + 예문","type":"vocab","words":[{"id":501,"expression":"amenity","ipa":"[əˈmenəti]","korean":"편의시설","example_ko":"대도시에는 다양한 편의시설이 있습니다.","example_en":"There are various amenities in a large city."},{"id":502,"expression":"electric","ipa":"[ɪˈlektrɪk]","korean":"전기의","example_ko":"저는 전기차를 샀습니다.","example_en":"I bought an electric car."},{"id":503,"expression":"foreign language","ipa":"[ˈfɔːrən ˈlæŋɡwɪdʒ]","korean":"외국어","example_ko":"외국어를 공부하는 것은 어렵습니다.","example_en":"It is difficult to study a foreign language."},{"id":504,"expression":"along","ipa":"[əˈlɔːŋ]","korean":"~을 따라","example_ko":"많은 차들이 도로를 따라 주차되어 있습니다.","example_en":"Many cars are parked along the road."},{"id":505,"expression":"apron","ipa":"[ˈeɪprən]","korean":"앞치마","example_ko":"그녀는 초록 앞치마를 입고 있습니다.","example_en":"She is wearing a green apron."},{"id":506,"expression":"assignment","ipa":"[əˈsaɪnmənt]","korean":"과제, 임무","example_ko":"그들은 과제를 함께 하고 있습니다.","example_en":"They are doing an assignment together."},{"id":507,"expression":"bookshelf","ipa":"[ˈbʊkʃelf]","korean":"책장","example_ko":"그의 뒤에 책장이 많이 보입니다.","example_en":"Behind him, I can see many bookshelves."},{"id":508,"expression":"bush","ipa":"[bʊʃ]","korean":"덤불","example_ko":"그들 뒤에 큰 덤불이 보입니다.","example_en":"Behind them, I can see a big bush."},{"id":509,"expression":"cardigan","ipa":"[ˈkɑːrdɪɡən]","korean":"가디건","example_ko":"그녀는 베이지색 가디건을 입고 있습니다.","example_en":"She is wearing a beige cardigan."},{"id":510,"expression":"ceiling","ipa":"[ˈsiːlɪŋ]","korean":"천장","example_ko":"천장에 큰 조명 세 개가 달려 있습니다.","example_en":"Three large lights are hanging from the ceiling."},{"id":511,"expression":"chart","ipa":"[tʃɑːrt]","korean":"차트, 도표","example_ko":"화이트보드에 차트가 보입니다.","example_en":"I can see some charts on the whiteboard."},{"id":512,"expression":"checkered skirt","ipa":"[ˈtʃekərd skɜːrt]","korean":"체크무늬 치마","example_ko":"그녀는 체크무늬 치마를 입고 있습니다.","example_en":"She is wearing a checkered skirt."},{"id":513,"expression":"construction site","ipa":"[kənˈstrʌkʃn saɪt]","korean":"공사장","example_ko":"이 사진은 공사장에서 찍힌 것 같습니다.","example_en":"I think this picture was taken at a construction site."},{"id":514,"expression":"formal clothes","ipa":"[ˈfɔːrml kloʊðz]","korean":"정장","example_ko":"그들은 정장을 입고 있습니다.","example_en":"They are wearing formal clothes."},{"id":515,"expression":"hijab","ipa":"[hɪˈdʒɑːb]","korean":"히잡","example_ko":"그녀는 히잡을 쓰고 있습니다.","example_en":"She is wearing a hijab."},{"id":516,"expression":"hold","ipa":"[hoʊld]","korean":"들다, 잡다","example_ko":"한 남자가 양배추를 들고 있습니다.","example_en":"A man is holding a cabbage."},{"id":517,"expression":"introduce","ipa":"[ˌɪntrəˈduːs]","korean":"소개하다","example_ko":"Laura Chung이 새 직원을 소개할 것입니다.","example_en":"Laura Chung will introduce the new staff."},{"id":518,"expression":"laptop screen","ipa":"[ˈlæptɑːp skriːn]","korean":"노트북 화면","example_ko":"그녀는 노트북 화면을 보고 있습니다.","example_en":"She is looking at a laptop screen."},{"id":519,"expression":"lounge","ipa":"[laʊndʒ]","korean":"라운지, 휴게실","example_ko":"이 사진은 라운지에서 찍힌 것 같습니다.","example_en":"I think this picture was taken in a lounge."},{"id":520,"expression":"mug","ipa":"[mʌɡ]","korean":"머그잔","example_ko":"한 여자가 머그잔을 들고 있습니다.","example_en":"A woman is holding a mug."},{"id":521,"expression":"necessary","ipa":"[ˈnesəseri]","korean":"필요한","example_ko":"그러실 필요는 없습니다.","example_en":"That won't be necessary."},{"id":522,"expression":"outdoor activity","ipa":"[ˈaʊtdɔːr ækˈtɪvəti]","korean":"야외 활동","example_ko":"날씨가 야외 활동하기 좋습니다.","example_en":"The weather is good for outdoor activities."},{"id":523,"expression":"plant","ipa":"[plænt]","korean":"식물","example_ko":"테이블 위에 식물이 많습니다.","example_en":"On the table, there are many plants."},{"id":524,"expression":"pull","ipa":"[pʊl]","korean":"당기다","example_ko":"한 여자가 검은 캐리어를 끌고 있습니다.","example_en":"A woman is pulling a black suitcase."},{"id":525,"expression":"safety vest","ipa":"[ˈseɪfti vest]","korean":"안전 조끼","example_ko":"그는 안전 조끼를 입고 있습니다.","example_en":"He is wearing a safety vest."},{"id":526,"expression":"serve","ipa":"[sɜːrv]","korean":"(음식을) 제공하다","example_ko":"한 여자가 손님들에게 음식을 제공하고 있습니다.","example_en":"A woman is serving some food to the customers."},{"id":527,"expression":"stack","ipa":"[stæk]","korean":"쌓다, 더미","example_ko":"큰 박스들이 쌓여 있습니다.","example_en":"Large boxes are stacked."},{"id":528,"expression":"stool","ipa":"[stuːl]","korean":"스툴 의자","example_ko":"노란 스툴 의자가 있습니다.","example_en":"There is a yellow stool."},{"id":529,"expression":"street light","ipa":"[striːt laɪt]","korean":"가로등","example_ko":"그 옆에 검은 가로등이 보입니다.","example_en":"Next to him, I can see a black street light."},{"id":530,"expression":"striped shirt","ipa":"[straɪpt ʃɜːrt]","korean":"줄무늬 셔츠","example_ko":"그녀는 줄무늬 셔츠를 입고 있습니다.","example_en":"She is wearing a striped shirt."},{"id":531,"expression":"traffic light","ipa":"[ˈtræfɪk laɪt]","korean":"신호등","example_ko":"그녀 옆에 신호등이 보입니다.","example_en":"Next to her, I can see a traffic light."},{"id":532,"expression":"traffic sign","ipa":"[ˈtræfɪk saɪn]","korean":"교통 표지판","example_ko":"그녀 앞에 교통 표지판이 있습니다.","example_en":"In front of her, there is a traffic sign."},{"id":533,"expression":"wave","ipa":"[weɪv]","korean":"손을 흔들다","example_ko":"그녀가 노트북 화면을 향해 손을 흔들고 있습니다.","example_en":"She is waving her hand at a laptop screen."},{"id":534,"expression":"window frame","ipa":"[ˈwɪndoʊ freɪm]","korean":"창틀","example_ko":"창틀에 시계가 있습니다.","example_en":"There is a clock on the window frame."},{"id":535,"expression":"wipe","ipa":"[waɪp]","korean":"닦다","example_ko":"웨이트리스가 테이블을 닦고 있습니다.","example_en":"A waitress is wiping a table."},{"id":536,"expression":"working clothes","ipa":"[ˈwɜːrkɪŋ kloʊðz]","korean":"작업복","example_ko":"그는 주황색 작업복을 입고 있습니다.","example_en":"He is wearing orange working clothes."},{"id":537,"expression":"abroad","ipa":"[əˈbrɔːd]","korean":"해외에","example_ko":"그는 해외여행을 하게 되어 신이 났습니다.","example_en":"He was excited to travel abroad."},{"id":538,"expression":"amusement park","ipa":"[əˈmjuːzmənt pɑːrk]","korean":"놀이공원","example_ko":"저는 작년에 놀이공원에 갔습니다.","example_en":"I went to an amusement park last year."},{"id":539,"expression":"anytime","ipa":"[ˈeniˌtaɪm]","korean":"언제든지","example_ko":"저는 언제든지 문자를 확인할 수 있습니다.","example_en":"I can check text messages anytime."},{"id":540,"expression":"business hours","ipa":"[ˈbɪznəs aʊərz]","korean":"영업 시간","example_ko":"영업 시간을 연장해야 합니다.","example_en":"They should extend the business hours."},{"id":541,"expression":"carry","ipa":"[ˈkæri]","korean":"들고 다니다","example_ko":"무거운 책을 들고 다니지 않아도 됩니다.","example_en":"We don't have to carry heavy books."},{"id":542,"expression":"compare","ipa":"[kəmˈper]","korean":"비교하다","example_ko":"다양한 브랜드를 쉽게 비교할 수 있습니다.","example_en":"They can compare various brands easily."},{"id":543,"expression":"convenience store","ipa":"[kənˈviːniəns stɔːr]","korean":"편의점","example_ko":"우리 동네에는 편의점이 많습니다.","example_en":"There are many convenience stores in my town."},{"id":544,"expression":"convenient","ipa":"[kənˈviːniənt]","korean":"편리한","example_ko":"우리 동네에서 대중교통을 이용하는 것이 편리합니다.","example_en":"It is convenient to use public transportation in my town."},{"id":545,"expression":"crowded","ipa":"[ˈkraʊdɪd]","korean":"붐비는","example_ko":"우리 동네 카페들은 아침에 붐빕니다.","example_en":"Cafés in my town are crowded in the morning."},{"id":546,"expression":"delivery charge","ipa":"[dɪˈlɪvəri tʃɑːrdʒ]","korean":"배달비","example_ko":"비싼 배달비를 내지 않아도 됩니다.","example_en":"I don't have to pay an expensive delivery charge."},{"id":547,"expression":"distract","ipa":"[dɪˈstrækt]","korean":"주의를 산만하게 하다","example_ko":"전자 기기는 학생들의 주의를 산만하게 할 수 있습니다.","example_en":"Electronic devices can distract students."},{"id":548,"expression":"drop","ipa":"[drɑːp]","korean":"떨어뜨리다","example_ko":"저는 핸드폰을 자주 떨어뜨립니다.","example_en":"I drop my mobile phone very often."},{"id":549,"expression":"electronic device","ipa":"[ɪˈlektrɑːnɪk dɪˈvaɪs]","korean":"전자 기기","example_ko":"저는 직장에서 다양한 전자 기기를 사용합니다.","example_en":"I use various electronic devices at work."},{"id":550,"expression":"employee benefits","ipa":"[ɪmˈplɔɪiː ˈbenɪfɪts]","korean":"직원 혜택","example_ko":"우리 회사는 훌륭한 직원 혜택을 제공합니다.","example_en":"Our company provides excellent employee benefits."},{"id":551,"expression":"entrance fee","ipa":"[ˈentrəns fiː]","korean":"입장료","example_ko":"입장료가 합리적이어야 합니다.","example_en":"The price of the entrance fee should be reasonable."},{"id":552,"expression":"exchange","ipa":"[ɪksˈtʃeɪndʒ]","korean":"교환하다","example_ko":"옷을 교환하는 것은 불편합니다.","example_en":"It is inconvenient to exchange clothes."},{"id":553,"expression":"experienced employee","ipa":"[ɪkˈspɪriənst ɪmˈplɔɪiː]","korean":"경력직 사원","example_ko":"우리 회사는 최근 경력직 사원 4명을 채용했습니다.","example_en":"Our company recently hired four experienced employees."},{"id":554,"expression":"expert","ipa":"[ˈekspɜːrt]","korean":"전문가","example_ko":"전문가에게 운동을 배울 수 있습니다.","example_en":"We can learn exercise from an expert."},{"id":555,"expression":"express train","ipa":"[ɪkˈspres treɪn]","korean":"급행 열차","example_ko":"급행 열차를 타고 도심까지 갈 수 있습니다.","example_en":"You can get to the downtown area by express train."},{"id":556,"expression":"foreigner","ipa":"[ˈfɔːrənər]","korean":"외국인","example_ko":"우리 도시에서는 외국인들이 대중교통을 이용하기 쉽습니다.","example_en":"It is easy for foreigners to use public transportation in my city."},{"id":557,"expression":"function","ipa":"[ˈfʌŋkʃn]","korean":"기능","example_ko":"전자책에는 독서에 편리한 기능들이 있습니다.","example_en":"E-books have convenient functions for reading."},{"id":558,"expression":"graduate","ipa":"[ˈɡrædʒuət]","korean":"졸업하다","example_ko":"저는 작년에 대학을 졸업했습니다.","example_en":"I graduated from university last year."},{"id":559,"expression":"hiking","ipa":"[ˈhaɪkɪŋ]","korean":"등산","example_ko":"저는 고향에서 등산을 즐깁니다.","example_en":"I enjoy hiking in my hometown."},{"id":560,"expression":"impulse purchase","ipa":"[ˈɪmpʌls ˈpɜːrtʃəs]","korean":"충동 구매","example_ko":"충동 구매를 피할 수 있습니다.","example_en":"I can avoid making an impulse purchase."},{"id":561,"expression":"inconvenient","ipa":"[ˌɪnkənˈviːniənt]","korean":"불편한","example_ko":"고향에서 대중교통을 이용하는 것이 불편합니다.","example_en":"It is inconvenient to use public transportation in my hometown."},{"id":562,"expression":"ingredient","ipa":"[ɪnˈɡriːdiənt]","korean":"재료","example_ko":"식사에 건강한 재료를 사용할 수 있습니다.","example_en":"I can use healthy ingredients for a meal."},{"id":563,"expression":"junk food","ipa":"[dʒʌŋk fuːd]","korean":"정크푸드","example_ko":"정크푸드를 피해야 합니다.","example_en":"We need to avoid junk food."},{"id":564,"expression":"large corporation","ipa":"[lɑːrdʒ ˌkɔːrpəˈreɪʃn]","korean":"대기업","example_ko":"한국의 많은 구직자들이 대기업에 취업하고 싶어합니다.","example_en":"Many job seekers in Korea want to get a job at a large corporation."},{"id":565,"expression":"latest","ipa":"[ˈleɪtɪst]","korean":"최신의","example_ko":"온라인 뉴스는 최신 정보를 제공합니다.","example_en":"Online news provides the latest information."},{"id":566,"expression":"local food","ipa":"[ˈloʊkl fuːd]","korean":"현지 음식","example_ko":"다양한 현지 음식을 즐길 수 있습니다.","example_en":"They can enjoy various local foods."},{"id":567,"expression":"lunch break","ipa":"[lʌntʃ breɪk]","korean":"점심 시간","example_ko":"저는 점심시간에 스포츠 잡지를 읽습니다.","example_en":"I usually read a sports magazine during the lunch break."},{"id":568,"expression":"outlet mall","ipa":"[ˈaʊtlet mɔːl]","korean":"아웃렛","example_ko":"저는 보통 아웃렛에서 옷을 삽니다.","example_en":"I usually buy clothes at an outlet mall."},{"id":569,"expression":"overpriced","ipa":"[ˌoʊvərˈpraɪst]","korean":"가격이 너무 비싼","example_ko":"메뉴들이 너무 비쌉니다.","example_en":"The menus are overpriced."},{"id":570,"expression":"performance","ipa":"[pərˈfɔːrməns]","korean":"성능, 성과","example_ko":"가장 중요한 요소는 성능입니다.","example_en":"The most important factor is performance."},{"id":571,"expression":"prefer","ipa":"[prɪˈfɜːr]","korean":"선호하다","example_ko":"저는 집에서 운동하는 것을 선호합니다.","example_en":"I prefer to exercise at home."},{"id":572,"expression":"promotion","ipa":"[prəˈmoʊʃn]","korean":"판촉, 승진","example_ko":"온라인 쇼핑몰들은 다양한 판촉을 제공합니다.","example_en":"Online shopping malls offer various promotions."},{"id":573,"expression":"provide","ipa":"[prəˈvaɪd]","korean":"제공하다","example_ko":"그들은 훌륭한 고객 서비스를 제공합니다.","example_en":"They provide excellent customer service."},{"id":574,"expression":"public transportation","ipa":"[ˈpʌblɪk ˌtrænsˌpɔːrˈteɪʃn]","korean":"대중교통","example_ko":"저는 거의 매일 대중교통을 이용합니다.","example_en":"I travel by public transportation almost every day."},{"id":575,"expression":"purchase","ipa":"[ˈpɜːrtʃəs]","korean":"구매하다","example_ko":"저는 인터넷으로 컴퓨터를 구매할 것입니다.","example_en":"I would purchase a computer over the Internet."},{"id":576,"expression":"recommend","ipa":"[ˌrekəˈmend]","korean":"추천하다","example_ko":"저는 온라인으로 옷을 구매하는 것을 추천합니다.","example_en":"I recommend buying clothes online."},{"id":577,"expression":"relieve","ipa":"[rɪˈliːv]","korean":"해소하다, 완화하다","example_ko":"그녀는 스트레스를 해소하기 위해 운동합니다.","example_en":"She exercises to relieve stress."},{"id":578,"expression":"rude","ipa":"[ruːd]","korean":"무례한","example_ko":"일부 직원들이 고객에게 무례했습니다.","example_en":"Some employees were rude to customers."},{"id":579,"expression":"sightseeing","ipa":"[ˈsaɪtˌsiːɪŋ]","korean":"관광","example_ko":"저는 관광을 위해 고향을 추천하겠습니다.","example_en":"I would recommend my hometown for sightseeing."},{"id":580,"expression":"solve","ipa":"[sɑːlv]","korean":"해결하다","example_ko":"이 문제는 해결하기 어렵습니다.","example_en":"This problem is difficult to solve."},{"id":581,"expression":"sporting event","ipa":"[ˈspɔːrtɪŋ ɪˈvent]","korean":"스포츠 행사","example_ko":"날씨에 상관없이 스포츠 행사를 즐길 수 있습니다.","example_en":"I can enjoy a sporting event regardless of the weather."},{"id":582,"expression":"tourist attraction","ipa":"[ˈtʊrɪst əˈtrækʃn]","korean":"관광 명소","example_ko":"인기 있는 관광 명소가 없습니다.","example_en":"There are no popular tourist attractions."},{"id":583,"expression":"transfer","ipa":"[ˈtrænsˌfɜːr]","korean":"환승하다","example_ko":"편리하게 환승할 수 있습니다.","example_en":"We can transfer conveniently."},{"id":584,"expression":"treadmill","ipa":"[ˈtredmɪl]","korean":"트레드밀","example_ko":"저는 트레드밀에서 달리는 것을 좋아합니다.","example_en":"I like running on a treadmill."},{"id":585,"expression":"twice","ipa":"[twaɪs]","korean":"두 번","example_ko":"저는 그들을 일 년에 두 번 만납니다.","example_en":"I see them twice a year."},{"id":586,"expression":"uncomfortable","ipa":"[ʌnˈkʌmftərbl]","korean":"불편한","example_ko":"3D 안경을 쓰는 것이 불편합니다.","example_en":"It is uncomfortable to wear 3D glasses."},{"id":587,"expression":"various","ipa":"[ˈveriəs]","korean":"다양한","example_ko":"온라인에 더 다양한 옷이 있습니다.","example_en":"There are more various clothes online."},{"id":588,"expression":"waste","ipa":"[weɪst]","korean":"낭비하다","example_ko":"시간을 낭비할 필요가 없습니다.","example_en":"I don't need to waste my time."},{"id":589,"expression":"well-known","ipa":"[ˌwelˈnoʊn]","korean":"잘 알려진","example_ko":"잘 알려진 브랜드는 편리한 고객 서비스를 제공합니다.","example_en":"Well-known brands provide convenient customer service."},{"id":590,"expression":"while","ipa":"[waɪl]","korean":"~하는 동안","example_ko":"저는 커피를 마시면서 책 읽는 것을 좋아합니다.","example_en":"I like reading books while drinking some coffee."},{"id":591,"expression":"yet","ipa":"[jet]","korean":"아직","example_ko":"컴퓨터가 아직 수리되지 않았습니다.","example_en":"The computer is not repaired yet."},{"id":592,"expression":"attend","ipa":"[əˈtend]","korean":"참석하다","example_ko":"저는 내일 회의에 참석할 예정입니다.","example_en":"I am going to attend a meeting tomorrow."},{"id":593,"expression":"bring","ipa":"[brɪŋ]","korean":"가져오다","example_ko":"이력서를 가져와야 합니다.","example_en":"You need to bring your resume."},{"id":594,"expression":"candidate","ipa":"[ˈkændɪdət]","korean":"지원자","example_ko":"우리는 두 명의 지원자를 면접할 것입니다.","example_en":"We'll be interviewing two candidates."},{"id":595,"expression":"certificate","ipa":"[sərˈtɪfɪkət]","korean":"자격증","example_ko":"그는 위험 관리 자격증이 있습니다.","example_en":"He has a certificate in Risk Management."},{"id":596,"expression":"job fair","ipa":"[dʒɑːb fer]","korean":"취업 박람회","example_ko":"취업 박람회는 오후 3시에 예정되어 있습니다.","example_en":"A job fair is scheduled at 3 P.M."},{"id":597,"expression":"fluent","ipa":"[ˈfluːənt]","korean":"유창한","example_ko":"그는 일본어가 유창합니다.","example_en":"He is fluent in Japanese."},{"id":598,"expression":"fortunately","ipa":"[ˈfɔːrtʃənətli]","korean":"다행히도","example_ko":"다행히도, 세미나는 오후 4시에 끝날 것입니다.","example_en":"Fortunately, the seminar will finish at 4 P.M."},{"id":599,"expression":"interview","ipa":"[ˈɪntərˌvjuː]","korean":"면접하다","example_ko":"Jin Wang을 마케팅 매니저 직책으로 면접할 것입니다.","example_en":"You will interview Jin Wang for the marketing manager position."},{"id":600,"expression":"located","ipa":"[loʊˈkeɪtɪd]","korean":"위치한","example_ko":"우리 매장은 26 Delton Road에 위치해 있습니다.","example_en":"Our store is located at 26 Delton Road."},{"id":601,"expression":"register","ipa":"[ˈredʒɪstər]","korean":"등록하다","example_ko":"할인을 받으려면 인터넷으로 등록해야 합니다.","example_en":"To get a discount, you should register on the internet."},{"id":602,"expression":"resume","ipa":"[rɪˈzuːm]","korean":"이력서","example_ko":"이력서를 쓰는 것이 쉽지 않았습니다.","example_en":"It was not easy to write a resume."},{"id":603,"expression":"suitable","ipa":"[ˈsuːtəbl]","korean":"적합한","example_ko":"저는 그녀가 적합한 지원자라고 생각합니다.","example_en":"I think she is a suitable applicant."},{"id":604,"expression":"welcome dinner","ipa":"[ˈwelkəm ˈdɪnər]","korean":"환영 만찬","example_ko":"환영 만찬은 금요일 저녁에 예정되어 있습니다.","example_en":"A welcome dinner is scheduled on Friday night."},{"id":605,"expression":"achieve","ipa":"[əˈtʃiːv]","korean":"달성하다","example_ko":"대도시에서 직업적 성공을 이루기가 더 쉽습니다.","example_en":"It is easier to achieve professional success in a big city."},{"id":606,"expression":"argue","ipa":"[ˈɑːrɡjuː]","korean":"다투다, 주장하다","example_ko":"그녀는 그와 자주 다퉜습니다.","example_en":"She argued with him often."},{"id":607,"expression":"compete","ipa":"[kəmˈpiːt]","korean":"경쟁하다","example_ko":"대형 프랜차이즈 카페와 경쟁하는 것은 매우 어렵습니다.","example_en":"It is very difficult to compete with large franchise cafés."},{"id":608,"expression":"competitive","ipa":"[kəmˈpetətɪv]","korean":"경쟁이 치열한","example_ko":"대도시에서 사업을 운영하는 것은 경쟁이 치열합니다.","example_en":"It is very competitive to run a business in a big city."},{"id":609,"expression":"curriculum","ipa":"[kəˈrɪkjələm]","korean":"교육과정","example_ko":"교육과정이 매우 어려웠습니다.","example_en":"The curriculum was very difficult."},{"id":610,"expression":"delay","ipa":"[dɪˈleɪ]","korean":"지연하다","example_ko":"우리 업무가 자주 지연되었습니다.","example_en":"Our work was delayed often."},{"id":611,"expression":"difficulty","ipa":"[ˈdɪfɪkəlti]","korean":"어려움","example_ko":"학생들의 어려움을 쉽게 파악하고 해결책을 줄 수 있습니다.","example_en":"They can find students' difficulties easily and give a solution."},{"id":612,"expression":"divide","ipa":"[dɪˈvaɪd]","korean":"나누다","example_ko":"업무를 효율적으로 나눌 수 있습니다.","example_en":"We can divide our work efficiently."},{"id":613,"expression":"eating habit","ipa":"[ˈiːtɪŋ hæbɪt]","korean":"식습관","example_ko":"사람들이 더 건강한 식습관을 갖고 있습니다.","example_en":"People have healthier eating habits."},{"id":614,"expression":"exaggerated","ipa":"[ɪɡˈzædʒəreɪtɪd]","korean":"과장된","example_ko":"요즘에는 과장된 광고가 많습니다.","example_en":"There are a lot of exaggerated advertisements nowadays."},{"id":615,"expression":"frequently","ipa":"[ˈfriːkwəntli]","korean":"자주","example_ko":"그는 학생들과 자주 소통했습니다.","example_en":"He communicated with students frequently."},{"id":616,"expression":"ignore","ipa":"[ɪɡˈnɔːr]","korean":"무시하다","example_ko":"그는 때때로 다른 사람들의 의견을 무시했습니다.","example_en":"He sometimes ignored others' opinions."},{"id":617,"expression":"improve","ipa":"[ɪmˈpruːv]","korean":"향상시키다","example_ko":"저는 중국어 실력을 빠르게 향상시킬 수 있었습니다.","example_en":"I was able to improve my Chinese skills quickly."},{"id":618,"expression":"job training","ipa":"[dʒɑːb ˈtreɪnɪŋ]","korean":"직업 훈련","example_ko":"저는 팀 매니저로부터 직업 훈련을 받는 것을 선호합니다.","example_en":"I prefer to receive job training from a team manager."},{"id":619,"expression":"language school","ipa":"[ˈlæŋɡwɪdʒ skuːl]","korean":"어학원","example_ko":"자주 야근을 해서 어학원에서 공부할 수 없었습니다.","example_en":"I couldn't study at a language school because I worked overtime often."},{"id":620,"expression":"living expenses","ipa":"[ˈlɪvɪŋ ɪkˈspensɪz]","korean":"생활비","example_ko":"생활비를 많이 절약할 수 있습니다.","example_en":"I can save living expenses a lot."},{"id":621,"expression":"participate","ipa":"[pɑːrˈtɪsɪpeɪt]","korean":"참여하다","example_ko":"저는 보통 직장 내 교육에 참여합니다.","example_en":"I usually participate in training at work."},{"id":622,"expression":"performance evaluation","ipa":"[pərˈfɔːrməns ɪˌvæljuˈeɪʃn]","korean":"성과 평가","example_ko":"시험 결과가 성과 평가에 반영되었습니다.","example_en":"The test result was reflected in the performance evaluation."},{"id":623,"expression":"possible","ipa":"[ˈpɑːsəbl]","korean":"가능한","example_ko":"더 저렴한 가격에 식사를 할 수 있습니다.","example_en":"It is possible to have a meal at a cheaper price."},{"id":624,"expression":"prohibit","ipa":"[prəˈhɪbɪt]","korean":"금지하다","example_ko":"학교는 학생들이 학교에서 전자 기기를 사용하는 것을 금지해야 합니다.","example_en":"Schools should prohibit students from using electronic devices at school."},{"id":625,"expression":"punctual","ipa":"[ˈpʌŋktʃuəl]","korean":"시간을 잘 지키는","example_ko":"그는 시간을 매우 잘 지키는 사람입니다.","example_en":"He is a very punctual person."},{"id":626,"expression":"reasonable","ipa":"[ˈriːznəbl]","korean":"합리적인","example_ko":"가격이 합리적입니다.","example_en":"The price is reasonable."},{"id":627,"expression":"regularly","ipa":"[ˈreɡjələrli]","korean":"정기적으로","example_ko":"저는 정기적으로 미국에 출장을 갑니다.","example_en":"I go on a business trip to the USA regularly."},{"id":628,"expression":"sales","ipa":"[seɪlz]","korean":"판매, 매출","example_ko":"매출이 저조했습니다.","example_en":"The sales were poor."},{"id":629,"expression":"social skills","ipa":"[ˈsoʊʃl skɪlz]","korean":"사회성","example_ko":"학생들은 체육 수업에서 다양한 사회성을 배울 수 있습니다.","example_en":"Students can learn various social skills in a PE class."},{"id":630,"expression":"video conference","ipa":"[ˈvɪdioʊ ˈkɑːnfərəns]","korean":"화상 회의","example_ko":"저는 종종 영어로 화상 회의를 일주일에 한 번 합니다.","example_en":"I often have a video conference in English once a week."},{"id":631,"expression":"weak point","ipa":"[wiːk pɔɪnt]","korean":"약점","example_ko":"우리는 우리의 강점과 약점을 잘 알고 있습니다.","example_en":"We know our strong and weak points very well."},{"id":632,"expression":"work life","ipa":"[wɜːrk laɪf]","korean":"직장 생활","example_ko":"유머 있는 직원들이 우리의 직장 생활을 더 즐겁게 만들어 줍니다.","example_en":"Humorous employees make our work life more enjoyable."},{"id":633,"expression":"working hours","ipa":"[ˈwɜːrkɪŋ aʊərz]","korean":"근무 시간","example_ko":"저는 근무 시간을 줄이고 싶었습니다.","example_en":"I wanted to reduce my working hours."},{"id":634,"expression":"worries","ipa":"[ˈwɜːrɪz]","korean":"걱정","example_ko":"공부에 대한 걱정을 잊을 수 있었습니다.","example_en":"I could forget my worries about studying."}]},{"id":"step1","title":"Step 1 기초편 ①","subtitle":"take / get / do / go / make / have","type":"vocab","words":[{"id":1,"expression":"It takes about 시간","korean":"시간이 어느정도 걸리다","example_ko":"집에 가는데 두 시간 정도 걸립니다.","example_en":"It takes about two hours to go home."},{"id":2,"expression":"take notes","korean":"필기하다","example_ko":"그녀는 필기를 하고 있습니다.","example_en":"She is taking notes."},{"id":3,"expression":"take 교통수단","korean":"교통수단을 이용하다","example_ko":"저는 버스를 하루에 두 번 탑니다.","example_en":"I take a bus twice a day."},{"id":4,"expression":"take place","korean":"열리다","example_ko":"회의는 오전 10시에 열릴 것입니다.","example_en":"The meeting will take place at 10 A.M."},{"id":5,"expression":"take a lecture / take a class","korean":"강의 / 수업을 듣다","example_ko":"저는 온라인 강의를 들었습니다.","example_en":"I took an online lecture."},{"id":6,"expression":"take a picture","korean":"사진을 찍다","example_ko":"한 여자가 사진을 찍고 있습니다.","example_en":"A woman is taking a picture."},{"id":7,"expression":"a picture was taken","korean":"사진이 찍히다","example_ko":"이 사진은 로비에서 찍힌 것 같습니다.","example_en":"I think this picture was taken in a lobby."},{"id":8,"expression":"take an order","korean":"주문을 받다","example_ko":"한 남자가 주문을 받고 있습니다.","example_en":"A man is taking an order."},{"id":9,"expression":"take a walk","korean":"산책을 하다","example_ko":"저는 주로 공원에서 산책을 합니다.","example_en":"I usually take a walk in a park."},{"id":10,"expression":"take a break","korean":"잠시 쉬다","example_ko":"그들은 직장에서 잠시 쉬고 있습니다.","example_en":"They are taking a break at work."},{"id":11,"expression":"take out a loan","korean":"대출을 받다","example_ko":"그녀는 은행에서 대출을 받았습니다.","example_en":"She took out a loan from a bank."},{"id":12,"expression":"take a nap","korean":"낮잠을 자다","example_ko":"저는 30분 정도 낮잠을 갔습니다.","example_en":"I took a nap for about 30 minutes."},{"id":13,"expression":"get a job","korean":"취업을 하다","example_ko":"그는 취업을 하기 위해 열심히 공부했습니다.","example_en":"He studied hard to get a job."},{"id":14,"expression":"get a high score / get good grades","korean":"높은 점수 / 좋은 성적을 받다","example_ko":"저는 토익에서 높은 점수를 받았습니다.","example_en":"I got a high score on the TOEIC."},{"id":15,"expression":"get a refund","korean":"환불 받다","example_ko":"저는 셔츠를 환불 받았습니다.","example_en":"I got a refund on my shirt."},{"id":16,"expression":"get a discount","korean":"할인을 받다","example_ko":"당신은 20달러를 할인 받을 수 있습니다.","example_en":"You can get a $20 discount."},{"id":17,"expression":"get feedback","korean":"피드백을 받다","example_ko":"저는 선생님께 자주 피드백을 받았습니다.","example_en":"I got feedback often from my teacher."},{"id":18,"expression":"get help / get support","korean":"도움 / 지원을 받다","example_ko":"우리는 트레이너에게 도움을 받을 수 있습니다.","example_en":"We can get help from a trainer."},{"id":19,"expression":"get 형용사","korean":"~한 상태가 되다","example_ko":"저는 결과에 실망했습니다.","example_en":"I got disappointed with the result."},{"id":20,"expression":"get promoted","korean":"승진하다","example_ko":"그는 작년에 승진했습니다.","example_en":"He got promoted last year."},{"id":21,"expression":"get paid","korean":"월급을 받다","example_ko":"그는 제때에 월급을 받지 못했습니다.","example_en":"He didn't get paid on time."},{"id":22,"expression":"get along with A","korean":"A와 잘 지내다","example_ko":"그녀는 모두와 잘 지냈습니다.","example_en":"She got along with everyone."},{"id":23,"expression":"get used to A","korean":"A에 익숙해지다","example_ko":"저는 업무에 익숙해졌습니다.","example_en":"I got used to my work."},{"id":24,"expression":"do business","korean":"사업을 하다","example_ko":"그녀는 사업을 하기 위해 소셜미디어를 이용했습니다.","example_en":"She used social media to do business."},{"id":25,"expression":"do an internship","korean":"인턴 근무를 하다","example_ko":"저는 IT 회사에서 인턴 근무를 했습니다.","example_en":"I did an internship at an IT company."},{"id":26,"expression":"do a task","korean":"업무를 하다","example_ko":"그는 직장에서 다양한 업무를 했습니다.","example_en":"He did a variety of tasks at work."},{"id":27,"expression":"do exercise","korean":"운동을 하다","example_ko":"우리는 헬스장에서 다양한 운동을 할 수 있습니다.","example_en":"We can do various exercises at the gym."},{"id":28,"expression":"do yoga / do weight training","korean":"요가 / 웨이트 트레이닝을 하다","example_ko":"그는 매일 요가를 했습니다.","example_en":"He did yoga every day."},{"id":29,"expression":"do the shopping","korean":"쇼핑을 하다","example_ko":"저는 온라인에서 식료품 쇼핑을 합니다.","example_en":"I do the grocery shopping online."},{"id":30,"expression":"do housework","korean":"집안일을 하다","example_ko":"저는 집안일을 혼자 해야 했습니다.","example_en":"I had to do housework alone."},{"id":31,"expression":"do the dishes / do the laundry","korean":"설거지 / 빨래를 하다","example_ko":"저는 식사 후에 설거지를 하지 않아도 됩니다.","example_en":"I don't have to do the dishes after eating."},{"id":32,"expression":"do volunteer work","korean":"봉사활동을 하다","example_ko":"제가 어렸을 때, 저는 자주 봉사활동을 했습니다.","example_en":"When I was young, I did volunteer work often."},{"id":33,"expression":"do an experiment","korean":"실험을 하다","example_ko":"한 남자가 실험을 하고 있습니다.","example_en":"A man is doing an experiment."},{"id":34,"expression":"do a project","korean":"프로젝트를 진행하다","example_ko":"저는 AI에 관한 팀 프로젝트를 진행했습니다.","example_en":"I did a team project on AI."},{"id":35,"expression":"go on a trip","korean":"여행을 하다","example_ko":"저는 가족과 함께 시드니로 여행을 갔습니다.","example_en":"I went on a trip to Sydney with my family."},{"id":36,"expression":"go on a package tour","korean":"패키지 여행을 하다","example_ko":"저는 상하이로 패키지 투어를 갔습니다.","example_en":"I went on a package tour to Shanghai."},{"id":37,"expression":"go on a vacation","korean":"휴가를 가다","example_ko":"그는 파리로 휴가를 갔습니다.","example_en":"He went on a vacation to Paris."},{"id":38,"expression":"go on a business trip","korean":"출장을 가다","example_ko":"저는 런던으로 출장을 갔습니다.","example_en":"I went on a business trip to London."},{"id":39,"expression":"go to school / go to work","korean":"통학 / 출근하다","example_ko":"저는 지하철로 출근합니다.","example_en":"I go to work by subway."},{"id":40,"expression":"go to the movies","korean":"영화를 보러 가다","example_ko":"저는 한 달에 한 번 정도 영화관에 갑니다.","example_en":"I go to the movies about once a month."},{"id":41,"expression":"go for a walk / go for a run","korean":"산책 / 달리기를 하다","example_ko":"저는 저녁에 자주 산책을 합니다.","example_en":"I often go for a walk in the evening."},{"id":42,"expression":"go swimming / go hiking / go jogging","korean":"수영 / 등산 / 조깅을 하다","example_ko":"저는 운동을 위해 등산을 합니다.","example_en":"I go hiking for exercise."},{"id":43,"expression":"go shopping","korean":"쇼핑을 하러 가다","example_ko":"저는 보통 주말에 쇼핑하러 갑니다.","example_en":"I usually go shopping on weekends."},{"id":44,"expression":"go up the stairs","korean":"계단을 올라가다","example_ko":"한 남자가 계단을 올라가고 있습니다.","example_en":"A man is going up the stairs."},{"id":45,"expression":"go along A","korean":"A를 따라 가다","example_ko":"보트가 강을 따라 가고 있습니다.","example_en":"A boat is going along the river."},{"id":46,"expression":"go bankrupt","korean":"파산하다","example_ko":"그 회사는 파산했습니다.","example_en":"The company went bankrupt."},{"id":47,"expression":"make friends","korean":"친구를 만들다","example_ko":"저는 학교에서 많은 친구를 사귀었습니다.","example_en":"I made many friends at school."},{"id":48,"expression":"make mistakes","korean":"실수를 하다","example_ko":"저는 직장에서 자주 실수를 했습니다.","example_en":"I often made mistakes at work."},{"id":49,"expression":"make an investment","korean":"투자를 하다","example_ko":"저는 한 스타트업 회사에 투자를 했습니다.","example_en":"I made an investment in a startup company."},{"id":50,"expression":"make a reservation","korean":"예약을 하다","example_ko":"저는 온라인으로 예약을 했습니다.","example_en":"I made a reservation online."},{"id":51,"expression":"make A 형용사","korean":"A를 ~하게 만들다","example_ko":"그 영화는 저를 슬프게 만들었습니다.","example_en":"The movie made me sad."},{"id":52,"expression":"make a 형용사 impression","korean":"~한 인상을 주다","example_ko":"그는 우리에게 좋은 인상을 주었습니다.","example_en":"He made a good impression on us."},{"id":53,"expression":"make a decision","korean":"결정을 내리다","example_ko":"그는 어려운 결정을 내렸습니다.","example_en":"He made a difficult decision."},{"id":54,"expression":"make a plan","korean":"계획을 세우다","example_ko":"저는 일본여행 계획을 세웠습니다.","example_en":"I made a plan to travel to Japan."},{"id":55,"expression":"make an effort","korean":"노력을 하다","example_ko":"그들은 손님을 끌기 위해 노력했습니다.","example_en":"They made an effort to attract customers."},{"id":56,"expression":"make a profit","korean":"수익을 내다","example_ko":"수익을 내기가 어려웠습니다.","example_en":"It was difficult to make a profit."},{"id":57,"expression":"make money","korean":"돈을 벌다","example_ko":"그는 많은 돈을 벌었습니다.","example_en":"He made a lot of money."},{"id":58,"expression":"have breakfast / lunch / dinner","korean":"아침 / 점심 / 저녁을 먹다","example_ko":"저는 주로 집에서 저녁을 먹습니다.","example_en":"I usually have dinner at home."},{"id":59,"expression":"have a meeting / have a discussion","korean":"회의 / 토론을 하다","example_ko":"그들은 회의를 하고 있습니다.","example_en":"They are having a meeting."},{"id":60,"expression":"have homework / have assignment","korean":"숙제 / 과제가 있다","example_ko":"저는 과제가 많았습니다.","example_en":"I had a lot of assignments."},{"id":61,"expression":"have a part-time job","korean":"아르바이트를 하다","example_ko":"저는 레스토랑에서 아르바이트를 했습니다.","example_en":"I had a part-time job at a restaurant."},{"id":62,"expression":"have been to A","korean":"A에 가본 적 있다","example_ko":"저는 유럽에 가본 적이 있습니다.","example_en":"I have been to Europe."},{"id":63,"expression":"have difficulty v-ing","korean":"~하는데 어려움을 겪다","example_ko":"그녀는 신제품 홍보에 어려움을 겪었습니다.","example_en":"She had difficulty promoting new products."},{"id":64,"expression":"have a video call","korean":"영상통화를 하다","example_ko":"한 남자가 영상통화를 하고 있습니다.","example_en":"A man is having a video call."},{"id":65,"expression":"have a chance to V","korean":"~할 기회가 있다","example_ko":"저는 해외에서 공부할 기회가 있었습니다.","example_en":"I had a chance to study abroad."},{"id":66,"expression":"have enough time to V","korean":"~할 시간이 충분하다","example_ko":"저는 공부할 시간이 충분하지 않았습니다.","example_en":"I didn't have enough time to study."},{"id":67,"expression":"have experience in A","korean":"A에 경험이 있다","example_ko":"그는 마케팅 업무 경험이 있습니다.","example_en":"He has experience in marketing."},{"id":68,"expression":"have a 형용사 lifestyle","korean":"~한 생활습관을 갖다","example_ko":"저는 건강하지 않은 생활습관을 가지고 있었습니다.","example_en":"I had an unhealthy lifestyle."},{"id":69,"expression":"have a habit of v-ing","korean":"~하는 습관이 있다","example_ko":"저는 늦게 자는 습관이 있습니다.","example_en":"I have a habit of sleeping late."},{"id":70,"expression":"have different tastes in A","korean":"A에 대한 취향이 다르다","example_ko":"사람들은 패션에 대한 취향이 다릅니다.","example_en":"People have different tastes in fashion."}]},{"id":"step2","title":"Step 2 기초편 ②","subtitle":"형용사 / 부사","type":"vocab","words":[{"id":101,"expression":"bored","korean":"지루한","example_ko":"저는 강의를 듣는 동안 지루했습니다.","example_en":"I was bored during the lecture."},{"id":102,"expression":"boring","korean":"지루하게 만드는","example_ko":"그 강의는 지루했습니다.","example_en":"The lecture was boring."},{"id":103,"expression":"comfortable / uncomfortable","korean":"편안한 / 불편한","example_ko":"책상과 의자가 편안했습니다.","example_en":"The desks and chairs were comfortable."},{"id":104,"expression":"competitive","korean":"경쟁이 심한","example_ko":"대도시에서 사업을 운영하는 것은 경쟁이 심합니다.","example_en":"It is competitive to run a business in a big city."},{"id":105,"expression":"confused","korean":"혼란스러운","example_ko":"우리는 새로운 규정에 혼란을 겪었습니다.","example_en":"We got confused by the new rules."},{"id":106,"expression":"convenient / inconvenient","korean":"편리한 / 불편한","example_ko":"아파트에 사는 것은 편리합니다.","example_en":"It is convenient to live in an apartment."},{"id":107,"expression":"crowded","korean":"붐비는","example_ko":"그 공원은 사람들로 붐볐습니다.","example_en":"The park was crowded with people."},{"id":108,"expression":"creative","korean":"창의적인","example_ko":"많은 회사들이 창의적인 직원을 선호합니다.","example_en":"Many companies prefer creative employees."},{"id":109,"expression":"detailed","korean":"자세한, 세부적인","example_ko":"그는 세부적인 계획을 세웠습니다.","example_en":"He made a detailed plan."},{"id":110,"expression":"disappointed","korean":"실망한","example_ko":"저는 서비스에 실망했습니다.","example_en":"I was disappointed with the service."},{"id":111,"expression":"disappointing","korean":"실망스러운","example_ko":"그 공연은 실망스러웠습니다.","example_en":"The show was disappointing."},{"id":112,"expression":"durable","korean":"튼튼한, 내구성 있는","example_ko":"저는 튼튼한 스마트폰이 필요합니다.","example_en":"I need a durable smartphone."},{"id":113,"expression":"effective","korean":"효과적인","example_ko":"그것은 스트레스 해소에 효과적입니다.","example_en":"It is effective in relieving stress."},{"id":114,"expression":"excellent","korean":"훌륭한, 뛰어난","example_ko":"저는 훌륭한 고객 서비스를 받았습니다.","example_en":"I received excellent customer service."},{"id":115,"expression":"exciting","korean":"흥미진진한, 신나는","example_ko":"그 영화는 흥미진진했습니다.","example_en":"The movie was exciting."},{"id":116,"expression":"experienced","korean":"경험이 많은","example_ko":"우리는 경험 많은 직원을 채용했습니다.","example_en":"We hired an experienced employee."},{"id":117,"expression":"enjoyable","korean":"즐거운, 유익한","example_ko":"그 강의는 즐거웠습니다.","example_en":"The lecture was enjoyable."},{"id":118,"expression":"fun","korean":"재미있는 (가볍고 신나는)","example_ko":"그 여행은 정말 재미있었습니다.","example_en":"The trip was really fun."},{"id":119,"expression":"funny","korean":"사람을 웃게 만드는","example_ko":"그는 자주 재미있는 농담을 했습니다.","example_en":"He often told funny jokes."},{"id":120,"expression":"healthy / unhealthy","korean":"건강한 / 건강하지 않은","example_ko":"우리는 건강한 식습관을 가질 수 있습니다.","example_en":"We can have healthy eating habits."},{"id":121,"expression":"helpful","korean":"도움이 되는","example_ko":"그의 조언은 매우 도움이 되었습니다.","example_en":"His advice was very helpful."},{"id":122,"expression":"historical","korean":"역사적인, 역사와 관련된","example_ko":"제 고향에는 역사적인 장소가 많습니다.","example_en":"My hometown has many historical places."},{"id":123,"expression":"interested","korean":"흥미, 관심이 있는","example_ko":"그녀는 공부에 관심이 없었습니다.","example_en":"She was not interested in studying."},{"id":124,"expression":"local","korean":"현지의","example_ko":"저는 유명한 현지 식당들을 방문했습니다.","example_en":"I visited famous local restaurants."},{"id":125,"expression":"luxurious","korean":"호화로운","example_ko":"우리는 호화로운 분위기에서 식사할 수 있습니다.","example_en":"We can have a meal in a luxurious atmosphere."},{"id":126,"expression":"modern","korean":"현대적인","example_ko":"이것은 현대적인 미술 갤러리의 사진 같습니다.","example_en":"I think this is a picture of a modern art gallery."},{"id":127,"expression":"necessary","korean":"필요한","example_ko":"그러실 필요는 없습니다.","example_en":"That won't be necessary."},{"id":128,"expression":"nervous","korean":"초조한, 긴장한","example_ko":"저는 면접 전에 많이 긴장했습니다.","example_en":"I was very nervous before the interview."},{"id":129,"expression":"old-looking","korean":"오래되어 보이는","example_ko":"한 남자가 오래되어 보이는 건물에 들어가고 있습니다.","example_en":"A man is entering an old-looking building."},{"id":130,"expression":"passionate","korean":"열정적인","example_ko":"그는 자기 일에 열정적이었습니다.","example_en":"He was passionate about his job."},{"id":131,"expression":"popular","korean":"인기 있는","example_ko":"그는 인기 있는 지역에 카페를 열었습니다.","example_en":"He opened a café in a popular area."},{"id":132,"expression":"practical","korean":"실용적인","example_ko":"우리는 인턴십 동안 실용적인 기술을 배울 수 있습니다.","example_en":"We can learn practical skills during internships."},{"id":133,"expression":"professional","korean":"전문적인","example_ko":"유튜브에는 전문적인 운동 영상이 많습니다.","example_en":"There are many professional exercise videos on YouTube."},{"id":134,"expression":"quiet","korean":"조용한","example_ko":"우리는 조용한 분위기에서 책을 읽을 수 있습니다.","example_en":"We can read books in a quiet atmosphere."},{"id":135,"expression":"reasonable","korean":"합리적인","example_ko":"그 매장은 합리적인 가격에 가구를 판매합니다.","example_en":"The store sells furniture at a reasonable price."},{"id":136,"expression":"relaxed","korean":"느긋한, 여유로운","example_ko":"우리는 여유로운 환경에서 일할 수 있습니다.","example_en":"We can work in a relaxed environment."},{"id":137,"expression":"responsible","korean":"책임감 있는","example_ko":"그녀는 책임감이 매우 강했습니다.","example_en":"She was very responsible."},{"id":138,"expression":"satisfied","korean":"만족한","example_ko":"저는 새 직장에 만족합니다.","example_en":"I'm satisfied with my new job."},{"id":139,"expression":"serious","korean":"심각한","example_ko":"그는 많은 심각한 실수를 저질렀습니다.","example_en":"He made many serious mistakes."},{"id":140,"expression":"stable","korean":"안정적인","example_ko":"우리는 재정적으로 안정된 삶을 살 수 있습니다.","example_en":"We can have a financially stable life."},{"id":141,"expression":"terrible","korean":"끔찍한, 매우 나쁜","example_ko":"제 기말고사 성적은 끔찍했습니다.","example_en":"My final exam grades were terrible."},{"id":142,"expression":"tired","korean":"피곤한","example_ko":"저는 학교에서 항상 피곤했습니다.","example_en":"I was always tired at school."},{"id":143,"expression":"traditional","korean":"기존의, 전통적인","example_ko":"우리는 그들의 전통 문화를 경험할 수 있습니다.","example_en":"We can experience their traditional culture."},{"id":144,"expression":"unique","korean":"독특한","example_ko":"그 동물원에는 독특한 동물이 많습니다.","example_en":"The zoo has many unique animals."},{"id":145,"expression":"useful","korean":"유용한","example_ko":"그 스마트폰에는 유용한 기능이 많습니다.","example_en":"The smartphone has many useful functions."},{"id":146,"expression":"various","korean":"다양한","example_ko":"그녀는 직장에서 다양한 업무를 처리했습니다.","example_en":"She handled various tasks at work."},{"id":147,"expression":"well-known","korean":"잘 알려진","example_ko":"잘 알려진 브랜드는 편리한 고객 서비스를 제공합니다.","example_en":"Well-known brands provide convenient customer service."},{"id":148,"expression":"often","korean":"자주","example_ko":"그는 자주 식사를 거르곤 했습니다.","example_en":"He often skipped meals."},{"id":149,"expression":"sometimes","korean":"가끔","example_ko":"저는 가끔 밤을 새웠습니다.","example_en":"I sometimes stayed up all night."},{"id":150,"expression":"usually","korean":"보통, 주로","example_ko":"저는 보통 머릿속을 정리하기 위해 산책을 합니다.","example_en":"I usually go for a walk to clear my head."},{"id":151,"expression":"rarely","korean":"드물게","example_ko":"그녀는 사무실에서 거의 말을 하지 않았습니다.","example_en":"She rarely talked in the office."},{"id":152,"expression":"accidentally","korean":"우연히, 실수로","example_ko":"저는 실수로 노트북에 커피를 쏟았습니다.","example_en":"I accidentally spilled coffee on my laptop."},{"id":153,"expression":"clearly","korean":"분명히","example_ko":"그는 자신의 의견을 분명하게 표현하지 않았습니다.","example_en":"He didn't express his opinion clearly."},{"id":154,"expression":"comfortably","korean":"편안하게","example_ko":"그들은 편안하게 쉴 수 있습니다.","example_en":"They can rest comfortably."},{"id":155,"expression":"conveniently","korean":"편리하게","example_ko":"우리는 편리하게 식료품을 쇼핑할 수 있습니다.","example_en":"We can shop for groceries conveniently."},{"id":156,"expression":"confidently","korean":"자신 있게","example_ko":"그녀는 자신 있게 프레젠테이션을 했습니다.","example_en":"She gave the presentation confidently."},{"id":157,"expression":"creatively","korean":"창의적으로","example_ko":"직원들은 더 창의적으로 일할 수 있습니다.","example_en":"Employees can work more creatively."},{"id":158,"expression":"early","korean":"일찍","example_ko":"저는 아침 일찍 일어나지 않아도 됩니다.","example_en":"I don't have to wake up early in the morning."},{"id":159,"expression":"late","korean":"늦게","example_ko":"저는 매일 늦게 잠자리에 들었습니다.","example_en":"I went to bed late every day."},{"id":160,"expression":"easily","korean":"쉽게","example_ko":"우리는 스마트폰으로 쉽게 음식을 주문할 수 있습니다.","example_en":"We can easily order food on a smartphone."},{"id":161,"expression":"hard","korean":"열심히","example_ko":"우리는 보너스를 받기 위해 열심히 일했습니다.","example_en":"We worked hard to get a bonus."},{"id":162,"expression":"effectively","korean":"효과적으로","example_ko":"우리는 효과적으로 스트레스를 완화할 수 있습니다.","example_en":"We can effectively relieve stress."},{"id":163,"expression":"efficiently","korean":"효율적으로","example_ko":"우리는 시간을 더 효율적으로 사용할 수 있습니다.","example_en":"We can use our time more efficiently."},{"id":164,"expression":"eventually","korean":"결국에는","example_ko":"그는 결국 작년에 그 식당을 닫았습니다.","example_en":"He eventually closed the restaurant last year."},{"id":165,"expression":"fortunately","korean":"다행히도","example_ko":"다행히도, 우리는 마감 기한을 지켰습니다.","example_en":"Fortunately, we met the deadline."},{"id":166,"expression":"fast / quickly","korean":"빠르게","example_ko":"우리는 업무에 빠르게 적응할 수 있습니다.","example_en":"We can adapt to our work quickly."},{"id":167,"expression":"freely","korean":"자유롭게","example_ko":"우리는 자유롭게 의견을 표현할 수 있었습니다.","example_en":"We were able to express our opinions freely."},{"id":168,"expression":"gradually","korean":"점차, 서서히","example_ko":"제 성적이 점점 향상되었습니다.","example_en":"My grades improved gradually."},{"id":169,"expression":"honestly","korean":"솔직하게","example_ko":"그는 자신의 실수를 솔직하게 보고했습니다.","example_en":"He reported his mistake honestly."},{"id":170,"expression":"leisurely","korean":"여유롭게","example_ko":"우리는 더 여유롭게 여행할 수 있습니다.","example_en":"We can travel more leisurely."},{"id":171,"expression":"professionally","korean":"전문적으로, 능숙하게","example_ko":"그는 불만사항을 능숙하게 처리했습니다.","example_en":"He handled complaints professionally."},{"id":172,"expression":"recently","korean":"최근에","example_ko":"저는 최근에 새 집으로 이사했습니다.","example_en":"I recently moved to a new house."},{"id":173,"expression":"regularly","korean":"규칙적으로","example_ko":"저는 건강을 유지하기 위해 규칙적으로 운동합니다.","example_en":"I exercise regularly to stay healthy."},{"id":174,"expression":"repeatedly","korean":"반복적으로","example_ko":"우리는 영상을 반복해서 볼 수 있습니다.","example_en":"We can watch the videos repeatedly."},{"id":175,"expression":"sincerely","korean":"진심으로","example_ko":"그녀는 학생들의 고민을 진심으로 들어주었습니다.","example_en":"She sincerely listened to students' worries."},{"id":176,"expression":"specifically","korean":"구체적으로","example_ko":"구체적으로 말하면, 우리는 출퇴근 시간을 절약할 수 있습니다.","example_en":"Specifically, we can save time on commuting."},{"id":177,"expression":"systematically","korean":"체계적으로","example_ko":"우리는 체계적으로 일하는 법을 배울 수 있습니다.","example_en":"We can learn to work systematically."}]},{"id":"step3","title":"Step 3 핵심구문편","subtitle":"can / It is / There are / need to / don't have to / like","type":"vocab","words":[{"id":201,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 책에 필기를 할 수 있습니다.","example_en":"I can take notes in a book."},{"id":202,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 목적지에 빨리 도착할 수 있습니다.","example_en":"I can get to my destination quickly."},{"id":203,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 직접 옷을 입어볼 수 있습니다.","example_en":"I can try on clothes in person."},{"id":204,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 적은 비용으로 여행할 수 있습니다.","example_en":"I can travel at a low cost."},{"id":205,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 스마트폰으로 쇼핑을 할 수 있습니다.","example_en":"I can shop on my smartphone."},{"id":206,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 다양한 브랜드를 비교할 수 있습니다.","example_en":"I can compare various brands."},{"id":207,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 요리에 드는 시간을 절약할 수 있습니다.","example_en":"I can save time on cooking."},{"id":208,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 늦은 밤에도 운동할 수 있습니다.","example_en":"I can exercise late at night."},{"id":209,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 돈을 낭비하는 것을 피할 수 있습니다.","example_en":"I can avoid wasting money."},{"id":210,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 일을 제시간에 끝낼 수 있습니다.","example_en":"I can finish work in time."},{"id":211,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 무료로 책을 읽을 수 있습니다.","example_en":"I can read books for free."},{"id":212,"expression":"can + V","korean":"~할 수 있다","example_ko":"저는 취향에 맞는 책을 고를 수 있습니다.","example_en":"I can choose books that suit my taste."},{"id":213,"expression":"We can + V","korean":"우리는 ~할 수 있다","example_ko":"우리는 트레이너에게 도움을 받을 수 있습니다.","example_en":"We can get help from a trainer."},{"id":214,"expression":"We can + V","korean":"우리는 ~할 수 있다","example_ko":"우리는 직장에서 인간관계를 넓힐 수 있습니다.","example_en":"We can expand our social network at work."},{"id":215,"expression":"We can + V","korean":"우리는 ~할 수 있다","example_ko":"우리는 아름다운 야경을 즐길 수 있습니다.","example_en":"We can enjoy a beautiful night view."},{"id":216,"expression":"We can + V","korean":"우리는 ~할 수 있다","example_ko":"우리는 시간과 장소에 상관없이 쇼핑할 수 있습니다.","example_en":"We can shop regardless of time and place."},{"id":217,"expression":"We can + V","korean":"우리는 ~할 수 있다","example_ko":"우리는 조용한 분위기에서 책을 읽을 수 있습니다.","example_en":"We can read books in a quiet atmosphere."},{"id":218,"expression":"We can + V","korean":"우리는 ~할 수 있다","example_ko":"우리는 편안한 환경에서 일할 수 있습니다.","example_en":"We can work in a comfortable environment."},{"id":219,"expression":"We can + V","korean":"우리는 ~할 수 있다","example_ko":"우리는 다양한 현지 음식을 즐길 수 있습니다.","example_en":"We can enjoy various local foods."},{"id":220,"expression":"They/Students can + V","korean":"그들/학생들은 ~할 수 있다","example_ko":"그들은 좋은 공부 습관을 기를 수 있습니다.","example_en":"They can develop good study habits."},{"id":221,"expression":"They/Students can + V","korean":"그들/학생들은 ~할 수 있다","example_ko":"학생들은 학교에서 많은 친구를 사귈 수 있습니다.","example_en":"Students can make many friends at school."},{"id":222,"expression":"They/Students can + V","korean":"그들/학생들은 ~할 수 있다","example_ko":"학생들은 다양한 사회성을 배울 수 있습니다.","example_en":"Students can learn various social skills."},{"id":223,"expression":"It is + 형용사 + to V","korean":"~하는 것이 ...하다","example_ko":"출퇴근하는 것이 불편했습니다.","example_en":"It was inconvenient to commute."},{"id":224,"expression":"It is convenient to V","korean":"~하기 편리하다","example_ko":"다양한 브랜드를 비교하기 편리합니다.","example_en":"It is convenient to compare various brands."},{"id":225,"expression":"It is important to V","korean":"~하는 것이 중요하다","example_ko":"규칙적으로 운동하는 것이 중요합니다.","example_en":"It is important to exercise regularly."},{"id":226,"expression":"It is difficult to V","korean":"~하기 어렵다","example_ko":"집에서는 공부에 집중하기 어렵습니다.","example_en":"It is difficult to focus on studying at home."},{"id":227,"expression":"It is easy to V","korean":"~하기 쉽다","example_ko":"대도시에서는 취업 정보를 얻기가 쉽습니다.","example_en":"It is easy to get job information in a big city."},{"id":228,"expression":"It is dangerous to V","korean":"~하는 것이 위험하다","example_ko":"혼자 캠핑을 가는 것은 위험합니다.","example_en":"It is dangerous to go camping alone."},{"id":229,"expression":"It is expensive to V","korean":"~하는 것이 비싸다","example_ko":"호텔 레스토랑에서 식사하는 것은 비쌉니다.","example_en":"It is expensive to eat at a hotel restaurant."},{"id":230,"expression":"It is fun to V","korean":"~하는 것이 즐겁다","example_ko":"친구들과 함께 쇼핑하는 것이 더 즐겁습니다.","example_en":"It is more fun to shop with my friends."},{"id":231,"expression":"There is (are) + 명사","korean":"~이 있다","example_ko":"제 고향에는 유명한 랜드마크가 없습니다.","example_en":"There is no famous landmark in my hometown."},{"id":232,"expression":"There are many + 명사","korean":"~이 많이 있다","example_ko":"요즘에는 학습을 위한 스마트폰 앱이 많습니다.","example_en":"There are many smartphone apps for learning."},{"id":233,"expression":"There are too many + 명사","korean":"~이 너무 많다","example_ko":"거리에 차가 너무 많습니다.","example_en":"There are too many cars on the street."},{"id":234,"expression":"I need to V","korean":"저는 ~해야 합니다","example_ko":"저는 더 건강한 식습관을 가져야 합니다.","example_en":"I need to have healthier eating habits."},{"id":235,"expression":"I need to V","korean":"저는 ~해야 합니다","example_ko":"저는 스마트폰을 덜 사용해야 합니다.","example_en":"I need to use my smartphone less."},{"id":236,"expression":"We should V","korean":"우리는 ~해야 한다","example_ko":"우리는 종이와 플라스틱을 재활용해야 합니다.","example_en":"We should recycle paper and plastic."},{"id":237,"expression":"We should V","korean":"우리는 ~해야 한다","example_ko":"우리는 대중교통을 더 자주 이용해야 합니다.","example_en":"We should take public transportation more often."},{"id":238,"expression":"I don't have to V","korean":"저는 ~하지 않아도 됩니다","example_ko":"저는 은행에 직접 가지 않아도 됩니다.","example_en":"I don't have to go to a bank in person."},{"id":239,"expression":"I don't have to V","korean":"저는 ~하지 않아도 됩니다","example_ko":"저는 주말에 일을 하지 않아도 됩니다.","example_en":"I don't have to work on weekends."},{"id":240,"expression":"I don't have to V","korean":"저는 ~하지 않아도 됩니다","example_ko":"저는 식사 후에 설거지를 할 필요가 없습니다.","example_en":"I don't have to do the dishes after having a meal."},{"id":241,"expression":"We don't have to V","korean":"우리는 ~하지 않아도 됩니다","example_ko":"우리는 여행 중에 서두르지 않아도 됩니다.","example_en":"We don't have to hurry while traveling."},{"id":242,"expression":"We don't have to V","korean":"우리는 ~하지 않아도 됩니다","example_ko":"우리는 통근에 시간을 낭비하지 않아도 됩니다.","example_en":"We don't have to waste time commuting."},{"id":243,"expression":"be interested in + 명사/동명사","korean":"~에 관심이 있다","example_ko":"저는 새로운 문화를 경험하는 데 관심이 있습니다.","example_en":"I'm interested in experiencing new cultures."},{"id":244,"expression":"be interested in + 명사/동명사","korean":"~에 관심이 있다","example_ko":"저는 인테리어 디자인에 관심이 많습니다.","example_en":"I'm very interested in interior design."},{"id":245,"expression":"not be interested in","korean":"~에 관심이 없다","example_ko":"저는 캠핑에 관심이 없습니다.","example_en":"I'm not interested in camping."},{"id":246,"expression":"not be interested in","korean":"~에 관심이 없다","example_ko":"저는 요리에 전혀 관심이 없습니다.","example_en":"I'm not interested in cooking at all."},{"id":247,"expression":"like + 동명사","korean":"~하는 것을 좋아하다","example_ko":"저는 책에 메모하는 것을 좋아합니다.","example_en":"I like taking notes in books."},{"id":248,"expression":"like + 동명사","korean":"~하는 것을 좋아하다","example_ko":"저는 혼자 여행하는 것을 좋아합니다.","example_en":"I like traveling alone."},{"id":249,"expression":"like + 동명사","korean":"~하는 것을 좋아하다","example_ko":"저는 일하면서 음악을 듣는 것을 좋아합니다.","example_en":"I like listening to music while working."},{"id":250,"expression":"don't like + 동명사","korean":"~하는 것을 좋아하지 않다","example_ko":"저는 집에서 요리하는 것을 좋아하지 않습니다.","example_en":"I don't like cooking at home."},{"id":251,"expression":"don't like + 동명사","korean":"~하는 것을 좋아하지 않다","example_ko":"저는 매운 음식을 먹는 것을 좋아하지 않습니다.","example_en":"I don't like eating spicy food."}]},{"id":"step4","title":"Step 4 빈출주제편 ①","subtitle":"work / school / technology","type":"vocab","words":[{"id":301,"expression":"look for a job","korean":"구직 활동을 하다","example_ko":"저는 1년간 구직 활동을 했습니다.","example_en":"I looked for a job for a year."},{"id":302,"expression":"job seeker","korean":"구직자","example_ko":"대부분의 구직자들은 대기업을 선호합니다.","example_en":"Most job seekers prefer large companies."},{"id":303,"expression":"prepare for a job interview","korean":"취업 면접을 준비하다","example_ko":"저는 혼자서 취업 면접을 준비했습니다.","example_en":"I prepared for a job interview alone."},{"id":304,"expression":"get a job","korean":"취업하다","example_ko":"그는 쉽게 취업을 했습니다.","example_en":"He got a job easily."},{"id":305,"expression":"enter A","korean":"A에 입사하다","example_ko":"그녀는 교육 회사에 들어갔습니다.","example_en":"She entered an education company."},{"id":306,"expression":"start A","korean":"A를 창업하다","example_ko":"그녀는 온라인 쇼핑몰을 차렸습니다.","example_en":"She started an online shopping mall."},{"id":307,"expression":"work overtime","korean":"야근을 하다","example_ko":"그녀는 거의 매일 야근을 했습니다.","example_en":"She worked overtime almost every day."},{"id":308,"expression":"get promoted","korean":"승진하다","example_ko":"그녀는 팀 매니저로 승진했습니다.","example_en":"She got promoted to the team manager."},{"id":309,"expression":"get fired","korean":"해고되다","example_ko":"그는 해고되었습니다.","example_en":"He got fired."},{"id":310,"expression":"quit the job","korean":"퇴사하다","example_ko":"그녀는 지난 달에 퇴사했습니다.","example_en":"She quit the job last month."},{"id":311,"expression":"go to work","korean":"출근하다","example_ko":"저는 주로 지하철로 출근합니다.","example_en":"I usually go to work by subway."},{"id":312,"expression":"make a mistake","korean":"실수를 하다","example_ko":"그는 업무 중에 자주 실수를 했습니다.","example_en":"He often made mistakes while working."},{"id":313,"expression":"receive a complaint","korean":"컴플레인을 받다","example_ko":"우리는 고객들로부터 많은 컴플레인을 받았습니다.","example_en":"We received many complaints from customers."},{"id":314,"expression":"do a task","korean":"업무를 하다","example_ko":"그는 혼자서 여러 업무를 했습니다.","example_en":"He did various tasks alone."},{"id":315,"expression":"be late for work","korean":"회사에 지각하다","example_ko":"저는 회사에 자주 지각했습니다.","example_en":"I was late for work often."},{"id":316,"expression":"change jobs","korean":"이직하다","example_ko":"그는 작년에 이직했습니다.","example_en":"He changed jobs last year."},{"id":317,"expression":"intern at A","korean":"A에서 인턴 근무를 하다","example_ko":"저는 스타트업 회사에서 인턴 근무를 했습니다.","example_en":"I interned at a start-up company."},{"id":318,"expression":"employee benefits","korean":"직원 혜택","example_ko":"대기업에는 다양한 직원 혜택이 있습니다.","example_en":"Large companies have various employee benefits."},{"id":319,"expression":"receive a salary","korean":"월급을 받다","example_ko":"그녀는 높은 월급을 받았습니다.","example_en":"She received a high salary."},{"id":320,"expression":"sales increase / decrease","korean":"매출이 늘다 / 줄다","example_ko":"매출이 많이 늘었습니다.","example_en":"The sales increased a lot."},{"id":321,"expression":"go on a business trip","korean":"출장을 가다","example_ko":"저는 자주 출장을 갔습니다.","example_en":"I often went on business trips."},{"id":322,"expression":"lunch break","korean":"점심시간","example_ko":"저는 점심시간에 산책을 합니다.","example_en":"I take a walk during lunch break."},{"id":323,"expression":"working hours","korean":"근무 시간","example_ko":"저의 근무 시간은 매우 길었습니다.","example_en":"My working hours were very long."},{"id":324,"expression":"finish A in time","korean":"A를 제 시간에 마치다","example_ko":"우리는 제 시간에 프로젝트를 마쳤습니다.","example_en":"We finished the project in time."},{"id":325,"expression":"meet the deadline","korean":"마감기한을 지키다","example_ko":"우리는 마감기한을 지키지 못했습니다.","example_en":"We couldn't meet the deadline."},{"id":326,"expression":"have a video call","korean":"화상 통화를 하다","example_ko":"저는 매일 아침 화상 통화를 했습니다.","example_en":"I had a video call every morning."},{"id":327,"expression":"expand social network","korean":"인간관계를 넓히다","example_ko":"우리는 직장에서 인간관계를 넓힐 수 있습니다.","example_en":"We can expand our social network at work."},{"id":328,"expression":"performance evaluation","korean":"인사 평가","example_ko":"그녀는 훌륭한 인사 평가를 받았습니다.","example_en":"She received an excellent performance evaluation."},{"id":329,"expression":"experienced employee","korean":"경력직 사원","example_ko":"우리 회사는 경력직 사원 두 명을 채용했습니다.","example_en":"Our company hired two experienced employees."},{"id":330,"expression":"flexible work system","korean":"유연근무제","example_ko":"우리 회사는 유연근무재를 도입했습니다.","example_en":"Our company introduced a flexible work system."},{"id":331,"expression":"focus on studies","korean":"공부에 집중하다","example_ko":"공부에 집중하기가 어려웠습니다.","example_en":"It was hard to focus on my studies."},{"id":332,"expression":"under stress","korean":"스트레스를 받다","example_ko":"저는 시험 전에 많은 스트레스를 받았습니다.","example_en":"I was under a lot of stress before exams."},{"id":333,"expression":"relieve stress","korean":"스트레스를 해소하다","example_ko":"학생들은 공부로 인한 스트레스를 해소할 수 있습니다.","example_en":"Students can relieve stress from studies."},{"id":334,"expression":"be motivated by A","korean":"A로부터 동기부여를 받다","example_ko":"그들은 다른 학생들로부터 동기부여를 받을 수 있습니다.","example_en":"They can be motivated by other students."},{"id":335,"expression":"lose interest","korean":"흥미를 잃다","example_ko":"저는 공부에 흥미를 잃었습니다.","example_en":"I lost interest in studying."},{"id":336,"expression":"self-control","korean":"자제력","example_ko":"어린 아이들은 자제력이 부족합니다.","example_en":"Young children lack self-control."},{"id":337,"expression":"receive feedback","korean":"피드백을 받다","example_ko":"저는 수업 중에 피드백을 자주 받았습니다.","example_en":"I often received feedback in class."},{"id":338,"expression":"take a class / take a lecture","korean":"수업 / 강의를 듣다","example_ko":"저는 집에서 온라인 수업을 들었습니다.","example_en":"I took an online class at home."},{"id":339,"expression":"go on a field trip","korean":"현장 학습을 가다","example_ko":"저는 박물관으로 현장 학습을 갔습니다.","example_en":"I went on a field trip to a museum."},{"id":340,"expression":"make friends","korean":"친구들을 사귀다","example_ko":"저는 고등학생 때 많은 친구들을 사귈 수 있었습니다.","example_en":"I was able to make many friends in high school."},{"id":341,"expression":"get along with A","korean":"A와 잘 지내다","example_ko":"그는 대부분의 학생들과 잘 지냈습니다.","example_en":"He got along well with most of the students."},{"id":342,"expression":"learn how to V","korean":"~하는 법을 배우다","example_ko":"저는 다른 학생들과 협력하는 방법을 배웠습니다.","example_en":"I learned how to cooperate with other students."},{"id":343,"expression":"interpersonal skills","korean":"대인관계 기술","example_ko":"학생들은 학교에서 대인관계 기술을 배울 수 있습니다.","example_en":"Students can learn interpersonal skills at school."},{"id":344,"expression":"improve skills","korean":"실력을 향상시키다","example_ko":"그녀는 수학 실력을 빠르게 향상시켰습니다.","example_en":"She improved her math skills quickly."},{"id":345,"expression":"get an education","korean":"교육을 받다","example_ko":"학생들은 더 나은 교육을 받을 수 있습니다.","example_en":"Students can get a better education."},{"id":346,"expression":"distract A from -ing","korean":"A가 ~하는 것을 방해하다","example_ko":"전자 기기는 학생들이 공부하는 것을 방해할 수 있습니다.","example_en":"Electronic devices can distract students from studying."},{"id":347,"expression":"develop a habit","korean":"습관을 기르다","example_ko":"그들은 좋은 공부 습관들을 기를 수 있습니다.","example_en":"They can develop good study habits."},{"id":348,"expression":"find an aptitude","korean":"적성을 발견하다","example_ko":"학생들이 자신의 적성을 발견할 수 있습니다.","example_en":"Students can find their aptitude."},{"id":349,"expression":"choose a career path","korean":"진로를 선택하다","example_ko":"그 수업은 학생들이 진로를 선택하는 데 도움이 되었습니다.","example_en":"The class helped students choose a career path."},{"id":350,"expression":"pass the exam / fail the exam","korean":"시험에 합격하다 / 불합격하다","example_ko":"그는 쉽게 시험에 합격했습니다.","example_en":"He passed the exam easily."},{"id":351,"expression":"cram school","korean":"입시 학원","example_ko":"저는 매일 입시 학원에서 공부했습니다.","example_en":"I studied at a cram school every day."},{"id":352,"expression":"get into a university","korean":"대학에 들어가다","example_ko":"저는 좋은 대학에 들어갈 수 있었습니다.","example_en":"I could get into a good university."},{"id":353,"expression":"major in A","korean":"A를 전공하다","example_ko":"그녀는 회계학을 전공했습니다.","example_en":"She majored in accounting."},{"id":354,"expression":"commute to A","korean":"A로 통학하다","example_ko":"저는 학교에 버스로 통학했습니다.","example_en":"I commuted to university by bus."},{"id":355,"expression":"tuition fee","korean":"학비","example_ko":"대학교 등록금이 비쌌습니다.","example_en":"The university tuition fee was expensive."},{"id":356,"expression":"scholarship","korean":"장학금","example_ko":"그는 전액 장학금을 받았습니다.","example_en":"He received a full-time scholarship."},{"id":357,"expression":"work part-time","korean":"아르바이트를 하다","example_ko":"저는 학기 동안 아르바이트를 했습니다.","example_en":"I worked part-time during the semesters."},{"id":358,"expression":"join a club","korean":"동아리에 가입하다","example_ko":"저는 농구 동아리에 가입했습니다.","example_en":"I joined a basketball club."},{"id":359,"expression":"study abroad","korean":"해외에서 공부하다","example_ko":"그는 영국에서 유학을 했습니다.","example_en":"He studied abroad in England."},{"id":360,"expression":"register for A","korean":"A에 등록하다","example_ko":"저는 외국어 학원에 등록했습니다.","example_en":"I registered for a language school."},{"id":361,"expression":"earn a certificate","korean":"자격증을 따다","example_ko":"그녀는 다양한 자격증을 땄습니다.","example_en":"She earned various certificates."},{"id":362,"expression":"anytime, anywhere","korean":"언제 어디서나","example_ko":"우리는 언제 어디서나 정보를 검색할 수 있습니다.","example_en":"We can search for information anytime, anywhere."},{"id":363,"expression":"regardless of A","korean":"A에 상관없이","example_ko":"우리는 장소에 상관없이 온라인 쇼핑을 할 수 있습니다.","example_en":"We can shop online regardless of location."},{"id":364,"expression":"pay with a smartphone","korean":"스마트폰으로 결제하다","example_ko":"우리는 매장에서 스마트폰으로 결제할 수 있습니다.","example_en":"We can pay with a smartphone at stores."},{"id":365,"expression":"save time","korean":"시간을 절약하다","example_ko":"우리는 최신 기술을 사용함으로써 시간을 절약할 수 있습니다.","example_en":"We can save time by using the latest technology."},{"id":366,"expression":"in real time","korean":"실시간으로","example_ko":"우리는 실시간으로 교통정보를 확인할 수 있습니다.","example_en":"We can check traffic information in real time."},{"id":367,"expression":"in advance","korean":"미리, 사전에","example_ko":"저는 미리 좌석을 예약할 수 있었습니다.","example_en":"I was able to reserve a seat in advance."},{"id":368,"expression":"browse the internet","korean":"인터넷을 검색하다","example_ko":"저는 쉬는 시간에 인터넷을 검색합니다.","example_en":"I browse the internet during my break."},{"id":369,"expression":"work from home","korean":"재택 근무하다","example_ko":"우리 회사에서는 직원들이 정기적으로 재택근무를 합니다.","example_en":"In our company, employees work from home regularly."},{"id":370,"expression":"AI program","korean":"인공지능 프로그램","example_ko":"많은 학생들이 효율적으로 공부하기 위해 AI 프로그램을 사용합니다.","example_en":"Many students use AI programs to study efficiently."},{"id":371,"expression":"improve the quality of life","korean":"삶의 질을 높이다","example_ko":"스마트 기기는 삶의 질을 높일 수 있습니다.","example_en":"Smart devices can improve the quality of life."},{"id":372,"expression":"replace A","korean":"A를 대체하다","example_ko":"인공지능이 인간을 빠르게 대체하고 있습니다.","example_en":"AI is replacing humans quickly."},{"id":373,"expression":"use social media","korean":"소셜 미디어를 사용하다","example_ko":"많은 기업들이 제품을 홍보하기 위해 소셜 미디어를 사용합니다.","example_en":"Many businesses use social media to promote products."},{"id":374,"expression":"electric cars","korean":"전기자동차","example_ko":"요즘은 전기차 충전소를 찾기가 쉽습니다.","example_en":"It is easy to find charging stations for electric cars these days."}]},{"id":"step5","title":"Step 5 빈출주제편 ②","subtitle":"shopping / housing / trend / travel / environment","type":"vocab","words":[{"id":401,"expression":"get a discount","korean":"할인을 받다","example_ko":"저는 20% 할인을 받았습니다.","example_en":"I got a 20% discount."},{"id":402,"expression":"offer a discount","korean":"할인을 하다","example_ko":"그들은 더 큰 할인을 제공해야 합니다.","example_en":"They should offer a bigger discount."},{"id":403,"expression":"at a low price / at a reasonable price","korean":"저렴한 / 합리적인 가격에","example_ko":"그들은 합리적인 가격에 화장품을 판매합니다.","example_en":"They sell cosmetics at a reasonable price."},{"id":404,"expression":"membership points","korean":"적립금","example_ko":"저는 적립금을 많이 받았습니다.","example_en":"I earned a lot of membership points."},{"id":405,"expression":"compare A","korean":"A를 비교하다","example_ko":"다양한 브랜드를 비교하기 편리합니다.","example_en":"It is convenient to compare various brands."},{"id":406,"expression":"promotional event","korean":"판촉 행사","example_ko":"그들은 다양한 판촉 행사를 진행했습니다.","example_en":"They held various promotional events."},{"id":407,"expression":"shipping service","korean":"배송 서비스","example_ko":"그들은 무료 배송 서비스를 제공합니다.","example_en":"They offer free shipping service."},{"id":408,"expression":"customer service","korean":"고객 서비스","example_ko":"직원들이 훌륭한 고객 서비스를 제공했습니다.","example_en":"The staff provided excellent customer service."},{"id":409,"expression":"local store","korean":"동네 매장","example_ko":"저는 주로 동네 서점에서 책을 구입합니다.","example_en":"I usually buy books at a local bookstore."},{"id":410,"expression":"try on A","korean":"A를 입어보다","example_ko":"저는 직접 옷을 입어볼 수 있습니다.","example_en":"I can try on clothes in person."},{"id":411,"expression":"exchange A for B","korean":"A를 B로 교환하다","example_ko":"저는 그것을 새 제품으로 교환했습니다.","example_en":"I exchanged it for a new product."},{"id":412,"expression":"get a refund for A","korean":"A를 환불받다","example_ko":"저는 그 책을 환불 받았습니다.","example_en":"I got a refund for the book."},{"id":413,"expression":"return A","korean":"A를 반품하다","example_ko":"저는 그 티셔츠를 반품했습니다.","example_en":"I returned the t-shirt."},{"id":414,"expression":"in one place","korean":"한 장소에서","example_ko":"저는 한 장소에서 쇼핑할 수 있습니다.","example_en":"I can shop in one place."},{"id":415,"expression":"sold out","korean":"품절된","example_ko":"그 가방은 항상 품절이었습니다.","example_en":"The bag was always sold out."},{"id":416,"expression":"wait in line","korean":"줄을 서서 기다리다","example_ko":"저는 한 시간 정도 줄을 서서 기다렸습니다.","example_en":"I waited in line for about an hour."},{"id":417,"expression":"online advertisement","korean":"온라인 광고","example_ko":"온라인 광고에는 허위 정보가 많습니다.","example_en":"There is a lot of false information in online advertisements."},{"id":418,"expression":"afford","korean":"경제적 여유가 있다","example_ko":"저는 그 가방을 구매할 여유가 없었습니다.","example_en":"I could not afford the bag."},{"id":419,"expression":"downtown","korean":"도심, 시내 중심가","example_ko":"도심지에서는 대중교통을 이용하기 편리합니다.","example_en":"It is convenient to use public transportation in the downtown area."},{"id":420,"expression":"countryside","korean":"시골","example_ko":"시골에서는 의료 서비스를 받기가 어렵습니다.","example_en":"It is difficult to get medical services in the countryside."},{"id":421,"expression":"in the suburbs","korean":"도시 외곽에","example_ko":"새 사무실은 도시 외곽에 위치해 있었습니다.","example_en":"The new office was located in the suburbs."},{"id":422,"expression":"neighbors","korean":"이웃 사람","example_ko":"요즘에는 많은 사람들이 이웃들과 말을 하지 않습니다.","example_en":"These days, many people don't talk to their neighbors."},{"id":423,"expression":"neighborhood","korean":"주변 지역, 동네","example_ko":"우리 동네에 큰 공원이 있습니다.","example_en":"There is a large park in my neighborhood."},{"id":424,"expression":"apartment complex","korean":"아파트 단지","example_ko":"그 아파트 단지에는 다양한 편의시설이 있었습니다.","example_en":"There were various amenities in the apartment complex."},{"id":425,"expression":"studio apartment","korean":"원룸 아파트","example_ko":"저는 원룸 아파트에 살았었습니다.","example_en":"I used to live in a studio apartment."},{"id":426,"expression":"single-family home","korean":"단독주택","example_ko":"한국에는 단독주택이 많지 않습니다.","example_en":"There are not many single-family houses in Korea."},{"id":427,"expression":"monthly rent","korean":"월세","example_ko":"월세와 공과금이 너무 비쌌습니다.","example_en":"The monthly rent and utility bills were too expensive."},{"id":428,"expression":"remodel house","korean":"집을 리모델링하다","example_ko":"저는 집을 리모델링하는 데 많은 돈을 썼습니다.","example_en":"I spent a lot of money on remodeling the house."},{"id":429,"expression":"be close to A","korean":"A에 가까운","example_ko":"저희 집은 사무실에 가깝습니다.","example_en":"My house is close to my office."},{"id":430,"expression":"suffer from A","korean":"A로부터 고생하다","example_ko":"저는 층간소음으로 고생했습니다.","example_en":"I suffered from the noise upstairs."},{"id":431,"expression":"nowadays","korean":"요즘","example_ko":"요즘 많은 사람들이 디지털 지갑을 사용합니다.","example_en":"Many people use digital wallets nowadays."},{"id":432,"expression":"anymore","korean":"더 이상","example_ko":"많은 아이들이 더 이상 밖에서 놀지 않습니다.","example_en":"Many children don't play outside anymore."},{"id":433,"expression":"used to V","korean":"과거에 ~하곤 했다","example_ko":"저는 수업 시간에 손으로 필기를 하곤 했습니다.","example_en":"I used to take notes by hand in class."},{"id":434,"expression":"prefer A over B","korean":"A를 B보다 선호하다","example_ko":"젊은 사람들은 TV보다 스트리밍 서비스를 선호합니다.","example_en":"Young people prefer streaming services over TV."},{"id":435,"expression":"gain popularity","korean":"인기를 얻다","example_ko":"친환경 제품이 인기를 얻고 있습니다.","example_en":"Eco-friendly products are gaining popularity."},{"id":436,"expression":"lose popularity","korean":"인기를 잃다","example_ko":"종이 책들이 젊은 사람들 사이에서 인기를 잃고 있습니다.","example_en":"Paper books are losing popularity among young people."},{"id":437,"expression":"grow fast","korean":"빠르게 성장하다","example_ko":"전기차 시장이 한국에서 빠르게 성장하고 있습니다.","example_en":"The electric car market is growing fast in Korea."},{"id":438,"expression":"slow down","korean":"둔화되다","example_ko":"한국의 출산율이 둔화되고 있습니다.","example_en":"The birth rate is slowing down in Korea."},{"id":439,"expression":"become trendy","korean":"유행하다","example_ko":"집에서 요리하는 것이 다시 유행하고 있습니다.","example_en":"Cooking at home is becoming trendy again."},{"id":440,"expression":"more and more people","korean":"점점 더 많은 사람들","example_ko":"점점 더 많은 사람들이 자신의 건강에 관심을 가지고 있습니다.","example_en":"More and more people are taking an interest in their health."},{"id":441,"expression":"instead of A","korean":"A 대신에","example_ko":"많은 사람들이 패키지여행에 참여하는 대신 자유여행을 합니다.","example_en":"Many people travel independently instead of joining package tours."},{"id":442,"expression":"The number of people -ing is increasing","korean":"~하는 사람들의 수가 늘어나고 있다","example_ko":"혼자 사는 사람들의 수가 늘어나고 있습니다.","example_en":"The number of people living alone is increasing."},{"id":443,"expression":"go on a trip","korean":"여행을 가다","example_ko":"저는 태국으로 여행을 갔습니다.","example_en":"I went on a trip to Thailand."},{"id":444,"expression":"go on a package tour","korean":"패키지 여행을 가다","example_ko":"저는 중국으로 패키지 여행을 갔습니다.","example_en":"I went on a package tour to China."},{"id":445,"expression":"go on a vacation","korean":"휴가를 가다","example_ko":"그는 스페인으로 휴가를 갔습니다.","example_en":"He went on a vacation to Spain."},{"id":446,"expression":"take a guided tour","korean":"가이드 투어를 하다","example_ko":"저는 파리에서 가이드 투어를 했습니다.","example_en":"I took a guided tour in Paris."},{"id":447,"expression":"travel abroad","korean":"해외여행을 하다","example_ko":"저는 일 년에 한 번 정도 해외여행을 합니다.","example_en":"I travel abroad about once a year."},{"id":448,"expression":"tourist attraction","korean":"관광지","example_ko":"저는 짧은 시간 동안 많은 관광지를 방문했습니다.","example_en":"I visited many tourist attractions in a short time."},{"id":449,"expression":"view","korean":"경치","example_ko":"우리는 아름다운 야경을 즐길 수 있습니다.","example_en":"We can enjoy a beautiful night view."},{"id":450,"expression":"local food","korean":"현지 음식","example_ko":"저는 다양한 현지 음식을 즐겼습니다.","example_en":"I enjoyed a variety of local foods."},{"id":451,"expression":"exotic","korean":"이국적인, 이색적인","example_ko":"그 도시는 매우 이국적이었습니다.","example_en":"The city was very exotic."},{"id":452,"expression":"the cost of living","korean":"물가","example_ko":"물가가 너무 비쌌습니다.","example_en":"The cost of living was too high."},{"id":453,"expression":"travel expenses","korean":"여행 경비","example_ko":"저는 여행 경비를 절약할 수 있었습니다.","example_en":"I was able to save money on travel expenses."},{"id":454,"expression":"environmental pollution","korean":"환경 오염","example_ko":"저는 환경 오염에 별로 관심이 없었습니다.","example_en":"I wasn't very interested in environmental pollution."},{"id":455,"expression":"eco-friendly products","korean":"친환경 제품","example_ko":"저는 재사용 장바구니 같은 친환경 제품을 사용합니다.","example_en":"I use eco-friendly products such as a reusable bag."},{"id":456,"expression":"energy-efficient","korean":"에너지 효율적인","example_ko":"그 이후로, 저는 보통 에너지 효율이 좋은 제품을 삽니다.","example_en":"Since then, I usually buy energy-efficient products."},{"id":457,"expression":"recycle","korean":"재활용하다","example_ko":"저는 재활용하는 습관을 들일 수 있었습니다.","example_en":"I was able to develop a habit of recycling."},{"id":458,"expression":"reduce pollution","korean":"오염을 줄이다","example_ko":"우리는 전기차를 이용함으로써 대기 오염을 줄일 수 있습니다.","example_en":"We can reduce air pollution by using electric cars."},{"id":459,"expression":"raise awareness","korean":"인식을 높이다","example_ko":"우리는 환경 문제에 대한 인식을 높일 수 있습니다.","example_en":"We can raise awareness of environmental issues."},{"id":460,"expression":"disposable products","korean":"일회용품","example_ko":"우리는 일회용품을 더 적게 사용해야 합니다.","example_en":"We should use fewer disposable products."},{"id":461,"expression":"protect the environment","korean":"환경을 보호하다","example_ko":"우리는 환경을 보호하는 법을 배웠습니다.","example_en":"We learned how to protect the environment."},{"id":462,"expression":"reduce waste","korean":"쓰레기를 줄이다","example_ko":"그렇게 함으로써, 우리는 쓰레기를 줄일 수 있습니다.","example_en":"By doing so, we can reduce waste."},{"id":463,"expression":"water pollution","korean":"수질 오염","example_ko":"수질 오염은 요즘 점점 심각한 문제가 되고 있습니다.","example_en":"Water pollution is becoming a serious issue nowadays."},{"id":464,"expression":"be polluted","korean":"오염되다","example_ko":"그 강은 심하게 오염되어 있었습니다.","example_en":"The river was heavily polluted."},{"id":465,"expression":"keep A clean","korean":"A를 깨끗하게 유지하다","example_ko":"우리는 아파트 단지를 깨끗하게 유지할 수 있었습니다.","example_en":"We were able to keep our apartment complex clean."}]}]};
+const PW = 'jake2026';
+let scr='home', vSess=null, vIdx=0, hideEn=false, exprRev=false, eenRev=false;
+let marked={};
+
+// ── 로그인 ──
+function tryLogin(){
+  const input=document.getElementById('pw-input').value;
+  if(input===PW){
+    sessionStorage.setItem('toss_auth','1');
+    showScr('home'); buildHome();
+    document.getElementById('pw-input').value='';
+  }else{
+    document.getElementById('pw-err').style.display='block';
+    document.getElementById('pw-input').value='';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+// ── Storage ──
+function loadMarked(){ try{const s=localStorage.getItem('toss_marks');if(s)marked=JSON.parse(s);}catch(e){} }
+function save(){ try{localStorage.setItem('toss_marks',JSON.stringify(marked));}catch(e){} refreshCnt(); }
+loadMarked();
+
+// ── TTS ──
+let ttsVoice=null;
+function initV(){
+  const vs=speechSynthesis.getVoices();
+  ttsVoice=vs.find(v=>v.lang==='en-US'&&v.localService)||vs.find(v=>v.lang==='en-US')||vs.find(v=>v.lang.startsWith('en'))||null;
+}
+speechSynthesis.onvoiceschanged=initV; initV();
+
+function speak(txt, btnId){
+  if(!txt||!txt.trim())return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt.trim());
+  u.lang='en-US';
+  u.rate=0.68;   // 느린 속도
+  u.pitch=1.0;
+  if(ttsVoice)u.voice=ttsVoice;
+  const btn=btnId?document.getElementById(btnId):null;
+  u.onstart=()=>btn&&btn.classList.add('on');
+  u.onend=u.onerror=()=>btn&&btn.classList.remove('on');
+  speechSynthesis.speak(u);
+}
+function speakWord(){ if(vSess)speak(vSess.words[vIdx].expression,'vsp-w'); }
+function speakSent(){ if(vSess)speak(vSess.words[vIdx].example_en,'vsp-s'); }
+
+// ── 선택한 단어만 발음 + 구글 검색 차단 ──
+// context menu 완전 차단 (구글 검색 팝업 방지)
+document.getElementById('vcard').addEventListener('contextmenu', e=>{ e.preventDefault(); e.stopPropagation(); });
+
+// 텍스트 선택 후 손 뗄 때 선택된 단어만 발음
+let selTimer=null;
+document.addEventListener('selectionchange', ()=>{
+  clearTimeout(selTimer);
+  selTimer=setTimeout(()=>{
+    if(scr!=='vocab')return;
+    const sel=window.getSelection().toString().trim();
+    if(sel&&sel.length>0&&sel.length<80&&/[a-zA-Z]/.test(sel)){
+      speak(sel);
+    }
+  }, 400);
+});
+
+// ── 영어 숨기기 ──
+function toggleHide(){
+  hideEn=!hideEn; exprRev=false; eenRev=false;
+  applyHide();
+  const btn=document.getElementById('vhide-btn');
+  btn.textContent=hideEn?'👁 보이기':'👁 숨기기';
+  btn.classList.toggle('active',hideEn);
+}
+function applyHide(){
+  const card=document.getElementById('vcard');
+  card.classList.toggle('h-expr', hideEn&&!exprRev);
+  card.classList.toggle('h-een',  hideEn&&!eenRev);
+}
+function revealExpr(){ exprRev=true; applyHide(); }
+function revealEen(){  eenRev=true;  applyHide(); }
+
+// ── Nav ──
+function showScr(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('screen-'+id).classList.remove('hidden');
+  scr=id;
+}
+function goHome(){ speechSynthesis.cancel(); closeSheet(); showScr('home'); buildHome(); }
+function refreshCnt(){
+  const n=Object.values(marked).filter(Boolean).length;
+  document.getElementById('rcnt').textContent=n+'개';
+}
+
+// ── Sheet ──
+function openSheet(id){ closeSheet(); document.getElementById('ovl').classList.add('open'); document.getElementById(id).classList.add('open'); }
+function closeSheet(){ document.getElementById('ovl').classList.remove('open'); document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('open')); }
+function switchOS(os){
+  document.getElementById('tab-ao').className='os-tab'+(os==='ao'?' on':'');
+  document.getElementById('tab-ios').className='os-tab'+(os==='ios'?' on':'');
+  document.getElementById('guide-ao').style.display=os==='ao'?'flex':'none';
+  document.getElementById('guide-ios').style.display=os==='ios'?'flex':'none';
+}
+
+// ── Home ──
+const icons={voca:'📒',step1:'📗',step2:'📘',step3:'📙',step4:'📕',step5:'📓'};
+function buildHome(){
+  const g=document.getElementById('sgrid'); g.innerHTML='';
+  const inst=document.createElement('div'); inst.className='instbanner'; inst.onclick=()=>openSheet('sheet-install');
+  inst.innerHTML=`<span style="font-size:1.5rem;flex-shrink:0">📲</span><div class="itxt"><b>핸드폰에서 사용하기 (설치 불필요)</b><span>파일 1개만 전송 · 인터넷 없이 작동</span></div><span style="opacity:.7;font-size:1.1rem;flex-shrink:0">›</span>`;
+  g.appendChild(inst);
+  DATA.sessions.forEach(s=>{
+    const n=Object.keys(marked).filter(k=>marked[k]&&s.words.some(w=>'v_'+w.id===k)).length;
+    const c=document.createElement('div'); c.className='scard';
+    c.innerHTML=`<div class="ico">${icons[s.id]||'📄'}</div><div class="nm">${s.title}</div><div class="snm">${s.subtitle||''}</div><div class="mt">${s.words.length}개</div>${n?'<div class="bdg">'+n+'</div>':''}`;
+    c.onclick=()=>openVocab(s); g.appendChild(c);
+  });
+  refreshCnt();
+}
+
+// ── Vocab ──
+function openVocab(s){
+  vSess=s; exprRev=false; eenRev=false;
+  vIdx=+(localStorage.getItem('vi_'+s.id)||0);
+  if(vIdx>=s.words.length)vIdx=0;
+  showScr('vocab'); renderCard();
+}
+function renderCard(){
+  const w=vSess.words[vIdx], total=vSess.words.length;
+  const isMk=!!marked['v_'+w.id];
+  exprRev=false; eenRev=false;
+
+  document.getElementById('vtitle').textContent=vSess.title;
+  document.getElementById('vprog').textContent=(vIdx+1)+'/'+total;
+  document.getElementById('vbar').style.width=((vIdx+1)/total*100)+'%';
+
+  const el=document.getElementById('vexpr');
+  el.textContent=w.expression;
+  el.className='expr'+(w.expression.length>25?' sm':'');
+  document.getElementById('vipa').textContent=w.ipa||'';
+  document.getElementById('vkor').textContent=w.korean||'';
+  document.getElementById('veko').textContent=w.example_ko||'';
+  document.getElementById('veen').textContent=w.example_en||'';
+
+  applyHide();
+
+  document.getElementById('vstar').className='star-i'+(isMk?' on':'');
+  const bmk=document.getElementById('vbmk');
+  bmk.textContent=isMk?'★':'☆';
+  bmk.className='bmk'+(isMk?' on':'');
+  document.getElementById('vprev').disabled=vIdx===0;
+  document.getElementById('vnext').disabled=vIdx===total-1;
+  try{localStorage.setItem('vi_'+vSess.id,vIdx);}catch(e){}
+}
+function vPrev(){if(vIdx>0){vIdx--;renderCard();}}
+function vNext(){if(vIdx<vSess.words.length-1){vIdx++;renderCard();}}
+function vMark(){
+  const key='v_'+vSess.words[vIdx].id;
+  marked[key]=!marked[key]; if(!marked[key])delete marked[key];
+  save(); renderCard();
+}
+
+// 스와이프
+let sx=0;
+const vc=document.getElementById('vcard');
+vc.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
+vc.addEventListener('touchend',e=>{
+  if(window.getSelection().toString().trim())return; // 텍스트 선택 중이면 스와이프 무시
+  const dx=e.changedTouches[0].clientX-sx;
+  if(Math.abs(dx)>60){dx<0?vNext():vPrev();}
+},{passive:true});
+
+// ── Review ──
+function openReview(){showScr('review');renderReview();}
+function renderReview(){
+  const list=document.getElementById('rlist'); list.innerHTML='';
+  const items=[];
+  DATA.sessions.forEach(s=>s.words.forEach(w=>{if(marked['v_'+w.id])items.push({s,w});}));
+  document.getElementById('rcnt2').textContent=items.length+'개';
+  document.getElementById('rctrl').style.display=items.length?'flex':'none';
+  if(!items.length){
+    list.innerHTML='<div class="empty"><div class="ei">📭</div><p>아직 체크한 항목이 없어요.<br>모르는 표현의 ☆ 버튼을 눌러 저장하세요!</p></div>';
+    return;
+  }
+  items.forEach(item=>{
+    const {s,w}=item;
+    const el=document.createElement('div'); el.className='ri';
+    const tw=JSON.stringify(w.expression); const ts=JSON.stringify(w.example_en);
+    el.innerHTML=`<div class="ric">${icons[s.id]||'📄'}</div>
+      <div class="rib">
+        <div class="rs">${s.title}</div>
+        <div class="re">${w.expression}</div>
+        <div class="rk">${w.korean}</div>
+        <div class="rx">${w.example_en}</div>
+      </div>
+      <div class="ri-btns">
+        <button class="rsp" onclick="event.stopPropagation();speak(${tw})">🔊W</button>
+        <button class="rsp s" onclick="event.stopPropagation();speak(${ts})">🔊S</button>
+      </div>`;
+    el.onclick=()=>{openVocab(s);vIdx=s.words.findIndex(x=>x.id===w.id);renderCard();};
+    list.appendChild(el);
+  });
+}
+function clearMarks(){
+  if(!confirm('모든 오답 체크를 삭제할까요?'))return;
+  marked={};save();renderReview();buildHome();
+}
+function practiceMarked(){
+  for(const s of DATA.sessions){
+    const idx=s.words.findIndex(w=>marked['v_'+w.id]);
+    if(idx>=0){openVocab(s);vIdx=idx;renderCard();return;}
+  }
+}
+
+// ── Keyboard (PC) ──
+document.addEventListener('keydown',e=>{
+  if(scr==='login'&&e.key==='Enter'){ tryLogin(); return; }
+  if(scr==='vocab'){
+    if(e.key==='ArrowLeft')vPrev();
+    if(e.key==='ArrowRight')vNext();
+    if(e.key==='w')speakWord();
+    if(e.key==='s')speakSent();
+    if(e.key==='Enter')vMark();
+    if(e.key==='h')toggleHide();
+  }
+});
+
+// ── 시작: 로그인 체크 ──
+if(sessionStorage.getItem('toss_auth')==='1'){
+  showScr('home'); buildHome();
+}else{
+  showScr('login');
+  setTimeout(()=>document.getElementById('pw-input').focus(),300);
+}
+
+// ── PWA 서비스워커 등록 ──
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
